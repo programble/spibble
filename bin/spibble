@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+require 'spibble'
+
+# TODO: Run the thing
+
+spibble = Spibble.new(File.expand_path(ARGV[0] || '.'))
+spibble.scrobble
