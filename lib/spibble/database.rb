@@ -1,7 +1,7 @@
 require 'yaml'
 
 module Spibble
-  Album = Struct.new(:title, :artist, :tracks)
+  Album = Struct.new(:title, :artist, :tracks, :sides)
   Track = Struct.new(:number, :title, :length)
 
   class Database
@@ -19,7 +19,7 @@ module Spibble
             album['tracks'].each_with_index do |t, i|
               tracks << Track.new(i + 1, t.keys.first, t.values.first)
             end
-            @db[title] = Album.new(title, album['artist'], tracks)
+            @db[title] = Album.new(title, album['artist'], tracks, album['sides'])
           end
         end
       end
@@ -29,7 +29,7 @@ module Spibble
       File.open(@filename, 'w') do |f|
         hash = {}
         @db.values.each do |album|
-          hash[album.title] = {'artist' => album.artist, 'tracks' => album.tracks.map {|t| {t.title => t.length} }}
+          hash[album.title] = {'artist' => album.artist, 'tracks' => album.tracks.map {|t| {t.title => t.length} }, 'sides' => album.sides}
         end
         YAML.dump(hash, f)
       end
