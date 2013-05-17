@@ -17,7 +17,7 @@ module Spibble
           YAML.load(f).each do |title, album|
             tracks = []
             album['tracks'].each_with_index do |t, i|
-              tracks << t ? Track.new(i + 1, t.keys.first, t.values.first) : t
+              tracks << Track.new(i + 1, t.keys.first, t.values.first)
             end
             @db[title] = Album.new(title, album['artist'], tracks)
           end
