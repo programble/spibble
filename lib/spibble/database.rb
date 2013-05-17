@@ -37,6 +37,7 @@ module Spibble
 
     def add(album)
       @db[album.title] = album
+      save
     end
 
     def find(title)
