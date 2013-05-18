@@ -59,5 +59,9 @@ module Spibble
       key = @db.keys.find {|k| k =~ regex }
       key ? @db[key] : key
     end
+
+    def each(&b)
+      @db.values.each(&b)
+    end
   end
 end
