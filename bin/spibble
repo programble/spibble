@@ -2,5 +2,17 @@
 
 require 'spibble'
 
-# TODO: Run the thing
 spibble = Spibble::Application.new
+
+if ARGV.empty?
+  spibble.list
+elsif ARGV[0].start_with? ?-
+  case ARGV.shift
+  when '-a', '--add'
+    spibble.add
+  when '-i', '--import'
+    spibble.import(ARGV)
+  end
+else
+  spibble.scrobble(ARGV.join(' '))
+end
