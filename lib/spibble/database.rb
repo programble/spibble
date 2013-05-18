@@ -21,7 +21,7 @@ module Spibble
 
   class Track < Struct.new(:number, :title, :length)
     def to_s
-      "#{number} - #{title} (#{ChronicDuration.output(length, :format => :chrono)})"
+      format('%02d - %s (%s)', number, title, ChronicDuration.output(length, :format => :chrono))
     end
   end
 
