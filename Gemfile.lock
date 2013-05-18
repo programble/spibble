@@ -4,6 +4,8 @@ GEM
     activesupport (3.2.13)
       i18n (= 0.6.1)
       multi_json (~> 1.0)
+    chronic_duration (0.10.2)
+      numerizer (~> 0.1.1)
     httparty (0.11.0)
       multi_json (~> 1.0)
       multi_xml (>= 0.5.2)
@@ -14,6 +16,7 @@ GEM
       xml-simple
     multi_json (1.7.3)
     multi_xml (0.5.3)
+    numerizer (0.1.1)
     taglib-ruby (0.6.0)
     xml-simple (1.1.2)
 
@@ -21,5 +24,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  chronic_duration (~> 0.10.0)
   lastfm (~> 1.19.0)
   taglib-ruby (~> 0.6.0)

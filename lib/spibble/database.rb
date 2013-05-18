@@ -1,8 +1,22 @@
+require 'chronic_duration'
 require 'yaml'
 
 module Spibble
-  Album = Struct.new(:title, :artist, :tracks, :sides)
-  Track = Struct.new(:number, :title, :length)
+  class Album < Struct.new(:title, :artist, :tracks, :sides)
+    def to_s
+      s = "#{artist} - #{title}\n"
+      tracks.each do |t|
+        s << "---\n" if sides.include? t.number
+        s << "  #{t}\n"
+      end
+      s
+    end
+  end
+  class Track < Struct.new(:number, :title, :length)
+    def to_s
+      "#{number} - #{title} (#{ChronicDuration.output(length, :format => :chrono)})"
+    end
+  end
 
   class Database
     def initialize(filename)
