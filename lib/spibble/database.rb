@@ -6,12 +6,19 @@ module Spibble
     def to_s
       s = "#{artist} - #{title}\n"
       tracks.each do |t|
-        s << "---\n" if sides.include? t.number
+        if side = sides[t.number]
+          if side[' ']
+            s << " #{side}\n"
+          else
+            s << " Side #{side}\n"
+          end
+        end
         s << "  #{t}\n"
       end
       s
     end
   end
+
   class Track < Struct.new(:number, :title, :length)
     def to_s
       "#{number} - #{title} (#{ChronicDuration.output(length, :format => :chrono)})"
@@ -33,7 +40,7 @@ module Spibble
             album['tracks'].each_with_index do |t, i|
               tracks << Track.new(i + 1, t.keys.first, t.values.first)
             end
-            @db[title] = Album.new(title, album['artist'], tracks, album['sides'])
+            @db[title] = Album.new(title, album['artist'], tracks, Hash[album['sides'].map {|s| s.reverse }])
           end
         end
       end
@@ -43,7 +50,7 @@ module Spibble
       File.open(@filename, 'w') do |f|
         hash = {}
         @db.values.each do |album|
-          hash[album.title] = {'artist' => album.artist, 'tracks' => album.tracks.map {|t| {t.title => t.length} }, 'sides' => album.sides}
+          hash[album.title] = {'artist' => album.artist, 'tracks' => album.tracks.map {|t| {t.title => t.length} }, 'sides' => Hash[album.sides.map {|s| s.reverse }]}
         end
         YAML.dump(hash, f)
       end
