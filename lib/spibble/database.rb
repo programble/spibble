@@ -70,5 +70,9 @@ module Spibble
     def each(&b)
       @db.values.each(&b)
     end
+
+    def map(&b)
+      @db.values.map(&b)
+    end
   end
 end

@@ -30,9 +30,7 @@ module Spibble
     end
 
     def list
-      @database.each do |album|
-        puts "#{album.artist} - #{album.title}"
-      end
+      puts @database.map {|a| "#{a.artist} - #{a.title}" }.sort
     end
 
     def add
