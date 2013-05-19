@@ -1,6 +1,6 @@
 # Spibble
 
-Tool to scrobble vinyls as you spin them
+Scrobble vinyls as you spin them
 
 ## License
 
