@@ -43,7 +43,7 @@ module Spibble
 
       album.tracks.each do |track|
         if side = album.sides[track.number]
-          print "Scrobble#{' side' unless side[' ']} #{side}? "
+          print "Scrobble#{' side' unless side.length > 2} #{side}? "
           STDIN.gets # TODO: Handle input
         end
 

@@ -7,7 +7,7 @@ module Spibble
       s = "#{artist} - #{title}\n"
       tracks.each do |t|
         if side = sides[t.number]
-          if side[' ']
+          if side.length > 2
             s << " #{side}\n"
           else
             s << " Side #{side}\n"
