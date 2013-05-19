@@ -13,6 +13,10 @@ elsif ARGV[0].start_with? ?-
   when '-i', '--import'
     spibble.import(ARGV)
   end
+elsif ARGV[0].start_with? ?+
+  offset = ARGV.shift[1..-1]
+  offset = offset.to_i if offset =~ /^\d+$/
+  spibble.scrobble(ARGV.join(' '), offset)
 else
   spibble.scrobble(ARGV.join(' '))
 end

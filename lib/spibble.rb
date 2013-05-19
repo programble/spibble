@@ -39,18 +39,31 @@ module Spibble
     def import(files)
     end
 
-    def scrobble(album)
+    def scrobble(album, offset = 1)
       album = @database.find(album)
       unless album
         puts 'Error: could not find album in database'
         exit 1
       end
 
+      if offset.is_a? String
+        regex = /#{Regexp.escape(offset)}/i
+        side = album.sides.select {|n, s| s =~ regex }
+        if side.empty?
+          puts 'Error: no such side'
+          exit 1
+        end
+        offset = side.keys.first
+      end
+
       puts album
       puts
 
-      scrobble = true
-      album.tracks.each do |track|
+      unless album.sides.include?(offset)
+        scrobble = input_yesno("Scrobble from track #{album.tracks[offset - 1]}?")
+      end
+
+      album.tracks.drop(offset - 1).each do |track|
         if side = album.sides[track.number]
           scrobble = input_yesno("Scrobble#{' side' unless side.length > 2} #{side}?")
         end
