@@ -19,6 +19,16 @@ module Spibble
       end
     end
 
+    def input_yesno(prompt = '', default = true)
+      loop do
+        print "#{prompt} "
+        input = STDIN.gets.chomp
+        return default if input.empty?
+        return true if input[0].downcase == ?y
+        return false if input[0].downcase == ?n
+      end
+    end
+
     def list
       @database.each do |album|
         puts "#{album.artist} - #{album.title}"
@@ -41,16 +51,18 @@ module Spibble
       puts album
       puts
 
+      scrobble = true
       album.tracks.each do |track|
         if side = album.sides[track.number]
-          print "Scrobble#{' side' unless side.length > 2} #{side}? "
-          STDIN.gets # TODO: Handle input
+          scrobble = input_yesno("Scrobble#{' side' unless side.length > 2} #{side}?")
         end
 
-        puts track
-        @lastfm.now_playing(album, track)
-        sleep(track.length)
-        @lastfm.scrobble
+        if scrobble
+          puts track
+          @lastfm.now_playing(album, track)
+          sleep(track.length)
+          @lastfm.scrobble
+        end
       end
     end
   end
