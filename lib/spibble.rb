@@ -69,7 +69,7 @@ module Spibble
         end
 
         if scrobble
-          puts track
+          puts " #{track}"
           @lastfm.now_playing(album, track)
           sleep(track.length)
           @lastfm.scrobble
