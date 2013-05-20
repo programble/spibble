@@ -5,13 +5,11 @@ module Spibble
     module_function
 
     def yesno(prompt = '', default = true)
-      loop do
-        print prompt
-        input = STDIN.gets.chomp
-        return default if input.empty?
-        return true if input[0].downcase == ?y
-        return false if input[0].downcase == ?n
-      end
+      print prompt
+      input = raw("ynYN\n").downcase
+      puts input
+      return default if input == "\n"
+      input == ?y
     end
 
     def raw(chars = '')
