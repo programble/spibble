@@ -50,7 +50,7 @@ module Spibble
         number = Input.line(" #{side}: ")
         break if number.empty?
         number = number.to_i
-        unless number == 0
+        unless number == 0 || album.sides.include?(number)
           album.sides[number] = side.dup
           side.succ!
         end
