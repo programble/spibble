@@ -27,6 +27,37 @@ module Spibble
     end
 
     def import(files)
+      begin
+        if files.length == 1
+          album = Import.directory(File.expand_path(files.first))
+        else
+          album = Import.files(files.map {|f| File.expand_path(f) })
+        end
+      rescue Import::ImportError => e
+        puts "Error: #{e}"
+        exit 1
+      end
+
+      puts album
+
+      # TODO: Allow arbitrary side naming
+      puts 'Sides:'
+      album.sides[1] = 'A'
+      puts ' A: 1'
+
+      side = 'B'
+      loop do
+        number = Input.line(" #{side}: ")
+        break if number.empty?
+        number = number.to_i
+        unless number == 0
+          album.sides[number] = side.dup
+          side.succ!
+        end
+      end
+
+      puts album
+      @database.add(album)
     end
 
     def scrobble(album, offset = 1)
