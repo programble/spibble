@@ -55,10 +55,10 @@ module Spibble
             next if i == buf.length
             i += 1
             print c # Echo moves cursor
-          when "\eOH" # Home
+          when "\eOH", "\x01" # Home
             print "\b" * i
             i = 0
-          when "\eOF" # End
+          when "\eOF", "\x05" # End
             print "\e[C" * (buf.length - i) # Simulate right arrow
             i = buf.length
           when "\b", "\x7F" # Backspace
