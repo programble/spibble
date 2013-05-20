@@ -72,6 +72,10 @@ module Spibble
             buf = buf[0, i] + buf[(i + 1)..-1] # Delete char under cursor
             print buf[i..-1] + ' ' # Reprint rest of buf
             print "\b" * (buf.length - i + 1) # Move cursor back
+          when "\v" # C-k Kill
+            print ' ' * (buf.length - i) # Clear rest of buf
+            print "\b" * (buf.length - i) # Move cursor back
+            buf = buf[0, i] # Truncate buf
           when /\e/, "\t"
             next # Ignore other escapes
           else
