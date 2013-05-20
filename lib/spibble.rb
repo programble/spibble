@@ -1,6 +1,6 @@
 require 'fileutils'
 
-%w[database lastfm import].each {|r| require "spibble/#{r}" }
+%w[database lastfm import input].each {|r| require "spibble/#{r}" }
 
 module Spibble
   SPIBBLE_DIR = File.join(Dir.home, '.config', 'spibble')
@@ -16,16 +16,6 @@ module Spibble
       rescue Lastfm::ApiError => e
         puts "Error: #{e}"
         exit 1
-      end
-    end
-
-    def input_yesno(prompt = '', default = true)
-      loop do
-        print "#{prompt} "
-        input = STDIN.gets.chomp
-        return default if input.empty?
-        return true if input[0].downcase == ?y
-        return false if input[0].downcase == ?n
       end
     end
 
@@ -60,12 +50,12 @@ module Spibble
       puts
 
       unless album.sides.include?(offset)
-        scrobble = input_yesno("Scrobble from track #{album.tracks[offset - 1]}?")
+        scrobble = Input.yesno("Scrobble from track #{album.tracks[offset - 1]}? ")
       end
 
       album.tracks.drop(offset - 1).each do |track|
         if side = album.sides[track.number]
-          scrobble = input_yesno("Scrobble#{' side' unless side.length > 2} #{side}?")
+          scrobble = Input.yesno("Scrobble#{' side' unless side.length > 2} #{side}? ")
         end
 
         if scrobble
