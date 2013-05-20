@@ -34,7 +34,7 @@ module Spibble
 
       tracks.sort_by! {|t| t[:number] }
 
-      Album.new(album, artist, tracks.map {|t| Track.new(t[:number], t[:title], t[:length]) }, [])
+      Album.new(album, artist, tracks.map {|t| Track.new(t[:number], t[:title], t[:length]) }, {})
     end
   end
 end
