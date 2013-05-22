@@ -23,6 +23,24 @@ module Spibble
       puts @database.map {|a| "#{a.artist} - #{a.title}" }.sort
     end
 
+    def input_sides!(sides)
+      # TODO: Allow arbitrary side naming
+      puts 'Sides:'
+      sides[1] = 'A'
+      puts ' A: 1'
+
+      side = 'B'
+      loop do
+        number = Input.line(" #{side}: ")
+        break if number.empty?
+        number = number.to_i
+        unless number == 0 || sides.include?(number)
+          sides[number] = side.dup
+          side.succ!
+        end
+      end
+    end
+
     def add
     end
 
@@ -39,23 +57,11 @@ module Spibble
       end
 
       puts album
+      puts
 
-      # TODO: Allow arbitrary side naming
-      puts 'Sides:'
-      album.sides[1] = 'A'
-      puts ' A: 1'
+      input_sides!(album.sides)
 
-      side = 'B'
-      loop do
-        number = Input.line(" #{side}: ")
-        break if number.empty?
-        number = number.to_i
-        unless number == 0 || album.sides.include?(number)
-          album.sides[number] = side.dup
-          side.succ!
-        end
-      end
-
+      puts
       puts album
       @database.add(album)
     end
