@@ -42,6 +42,35 @@ module Spibble
     end
 
     def add
+      album = ''
+      album = Input.line('Album: ') while album.empty?
+      artist = ''
+      artist = Input.line('Artist: ') while artist.empty?
+
+      tracks = []
+      loop do
+        track = tracks.length + 1
+        title = Input.line(format('  %02d - ', track), '', false)
+        break if title.empty?
+        length = Input.line(' (', ')', true, 0)
+        loop do
+          length.chop! if length.end_with? ')'
+          length = ChronicDuration.parse(length)
+          break if length
+          length = Input.line(format('  %02d - %s (', track, title), ')', true, 0)
+        end
+        tracks << Track.new(track, title, length)
+      end
+      puts
+
+      sides = {}
+      input_sides!(sides)
+
+      album = Album.new(album, artist, tracks, sides)
+      puts
+      puts album
+
+      @database.add(Album.new(album, artist, tracks, sides))
     end
 
     def import(files)
