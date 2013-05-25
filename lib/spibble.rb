@@ -70,7 +70,7 @@ module Spibble
       puts
       puts album
 
-      @database.add(Album.new(album, artist, tracks, sides))
+      @database.add(album)
     end
 
     def import(files)
