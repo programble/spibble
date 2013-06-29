@@ -21,13 +21,13 @@
                       (album-thumb % album)))
 
 (defragment album-search (template :search)
-  [query albums page page-max]
+  [albums query page pages]
   (l/class= :thumbnails) (l/content (album-thumbs albums))
   (if (= page 1)
-    [(l/class= :previous) (l/attr :class "previous disabled")]
+    [(l/class= :previous) (l/remove)]
     [(l/id= :previous) (l/attr :href (str "/search?q=" query "&p=" (dec page)))])
-  (if (= page page-max)
-    [(l/class= :next) (l/attr :class "next disabled")]
+  (if (= page pages)
+    [(l/class= :next) (l/remove)]
     [(l/id= :next) (l/attr :href (str "/search?q=" query "&p=" (inc page)))]))
 
 (defn albums-page []
@@ -35,9 +35,10 @@
     (l/unescaped "<p>TODO: List popular albums</p>")))
 
 (defn search-page [query page]
-  (layout
-    (album-search query (album/search query page) page 3)
-    (str "Album search: " query)))
+  (let [{:keys [albums pages]} (album/search query page)]
+    (layout
+      (album-search albums query page pages)
+      (str "Album search: " query))))
 
 (defroutes album-routes
   (GET "/" []
