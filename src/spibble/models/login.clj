@@ -10,6 +10,8 @@
 
 (def auth-url (str "http://www.last.fm/api/auth/?api_key=" api-key))
 
+(mc/ensure-index "users" {:session 1})
+
 (defn user-map [user info]
     (merge user
            (select-keys info [:realname :url])
