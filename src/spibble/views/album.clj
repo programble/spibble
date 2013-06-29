@@ -35,10 +35,12 @@
     (l/unescaped "<p>TODO: List popular albums</p>")))
 
 (defn search-page [query page]
-  (let [{:keys [albums pages]} (album/search query page)]
-    (layout
-      (album-search albums query page pages)
-      (str "Album search: " query))))
+  (if (empty? query)
+    (redirect "/albums")
+    (let [{:keys [albums pages]} (album/search query page)]
+      (layout
+        (album-search albums query page pages)
+        (str "Album search: " query)))))
 
 (defroutes album-routes
   (GET "/" []
