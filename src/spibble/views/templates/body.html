@@ -2,8 +2,14 @@
   <div class="navbar-inner">
     <div class="container">
       <a class="brand" href="/">Spibble</a>
+
+      <form class="navbar-search pull-left" action="/search" method="get">
+        <input class="search-query span3" type="search" name="q" placeholder="search">
+      </form>
+
       <div class="pull-right">
         <a id="login" class="btn" href="/login"><i class="icon-signin"></i> log in</a>
+
         <ul id="user" class="nav">
           <li class="active"><a id="user-name"></a></li>
         </ul>
@@ -19,7 +25,6 @@
   </div>
 
   <footer>
-  <p class="muted text-center">
   <p class="muted pull-left">
   <small>&copy; 2013 Curtis McEnroe</small>
   <p class="muted pull-right">
