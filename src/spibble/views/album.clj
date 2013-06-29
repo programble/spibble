@@ -23,10 +23,10 @@
 (defragment album-search (template :search)
   [albums query page pages]
   (l/class= :thumbnails) (l/content (album-thumbs albums))
-  (if (= page 1)
+  (if (<= page 1)
     [(l/class= :previous) (l/remove)]
     [(l/id= :previous) (l/attr :href (str "/search?q=" query "&p=" (dec page)))])
-  (if (= page pages)
+  (if (>= page pages)
     [(l/class= :next) (l/remove)]
     [(l/id= :next) (l/attr :href (str "/search?q=" query "&p=" (inc page)))]))
 
