@@ -1,8 +1,8 @@
 (ns spibble.models.album
   (:require [spibble.utilities :refer [image-map]]
+            [spibble.config :refer [api-key]]
             [monger.collection :as mc]
-            [me.raynes.least :as least]
-            [spibble.models.login :refer [api-key]]))
+            [me.raynes.least :as least]))
 
 (mc/ensure-index "albums" {:id 1})
 
