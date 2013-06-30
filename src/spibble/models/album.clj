@@ -6,11 +6,13 @@
             [monger.query :as mq]
             [me.raynes.least :as least]))
 
+(mc/ensure-index "albums" {:id 1})
+
 (def lastfm
   "TTL memoized function for making Last.fm API calls."
   (memo/ttl #(least/read %1 api-key %2) :ttl/threshold 3600000))
 
-(mc/ensure-index "albums" {:id 1})
+(defn vector-fix [v] (if (sequential? v) v [v]))
 
 (defn from-lastfm
   "Process album returned by Last.fm for sanity."
@@ -62,7 +64,7 @@
   "Search Last.fm for albums."
   [query page per]
   (let [results (:results (lastfm "album.search" {:album query :limit per :page page}))
-        albums (map from-lastfm (-> results :albummatches :album))
+        albums (map from-lastfm (-> results :albummatches :album vector-fix))
         pages (-> results :opensearch:totalResults Long/parseLong (count-pages per))]
     ;; Create local data for every search result
     (doseq [album albums]
