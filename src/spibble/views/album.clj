@@ -32,7 +32,7 @@
 
 (defn albums-page []
   (layout
-    (albums [])))
+    (albums (album/get-top-albums))))
 
 (defn search-page [query page]
   (if (empty? query)
