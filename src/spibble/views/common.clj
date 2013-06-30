@@ -13,11 +13,10 @@
 (defragment body (template :body)
   [contents]
   (if-let [user (session/get :user)]
-    [(l/id= "user-name") (comp (l/attr :href (str "/user/" (:name user)))
-                               (l/content (:name user)))
-     (l/id= "login") (l/remove)]
-    [(l/id= "user") (l/remove)
-     (l/id= "logout") (l/remove)])
+    [(l/id= :user) (comp (l/attr :href (str "/user/" (:name user)))
+                         (l/content (:name user)))
+     (l/class= :logged-out) (l/remove)]
+    [(l/class= :logged-in) (l/remove)])
   (l/id= :contents) (l/content contents))
 
 (let [html (l/parse (template :html))]

@@ -4,8 +4,8 @@
       <a class="brand" href="/">Spibble</a>
 
       <ul class="nav">
-        <li><a href="/albums">Albums</a></li>
-        <li><a href="/about">About</a></li>
+        <li><a id="albums" href="/albums">Albums</a></li>
+        <li><a id="about" href="/about">About</a></li>
       </ul>
 
       <form class="navbar-search pull-left" action="/search" method="get">
@@ -13,12 +13,16 @@
       </form>
 
       <div class="pull-right">
-        <a id="login" class="btn" href="/login"><i class="icon-signin"></i> Log in</a>
+        <a id="login" class="btn logged-out" href="/login">
+          <i class="icon-signin"></i> Log in
+        </a>
 
-        <ul id="user" class="nav">
-          <li class="active"><a id="user-name"></a></li>
+        <ul class="nav logged-in">
+          <li class="active"><a id="user"></a></li>
         </ul>
-        <a id="logout" class="btn" href="/logout"><i class="icon-off"></i></a>
+        <a id="logout" class="btn logged-in" href="/logout">
+          <i class="icon-off"></i>
+        </a>
       </div>
     </div>
   </div>
