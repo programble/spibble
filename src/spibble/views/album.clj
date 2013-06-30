@@ -40,7 +40,7 @@
 (defn search-page [query page]
   (if (empty? query)
     (redirect "/albums")
-    (let [{:keys [albums pages]} (album/search query page)]
+    (let [{:keys [albums pages]} (album/search query page 6)]
       (layout
         (conj (album-search query albums)
               (pager (str "/search?q=" query "&") page pages))

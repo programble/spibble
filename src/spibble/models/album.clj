@@ -1,7 +1,7 @@
 (ns spibble.models.album
   (:require [clojure.core.memoize :as memo]
             [spibble.config :refer [api-key]]
-            [spibble.utilities :refer [image-map]]
+            [spibble.utilities :refer [image-map count-pages]]
             [monger.collection :as mc]
             [monger.query :as mq]
             [me.raynes.least :as least]))
@@ -59,11 +59,11 @@
                     (mq/paginate :page page :per-page per))))
 
 (defn search
-  "Search Last.fm for albums in pages of 6."
-  [query page]
-  (let [results (:results (lastfm "album.search" {:album query :limit 6 :page page}))
+  "Search Last.fm for albums."
+  [query page per]
+  (let [results (:results (lastfm "album.search" {:album query :limit per :page page}))
         albums (map from-lastfm (-> results :albummatches :album))
-        pages (-> results :opensearch:totalResults Long/parseLong (/ 6) Math/ceil int)]
+        pages (-> results :opensearch:totalResults Long/parseLong (count-pages per))]
     ;; Create local data for every search result
     (doseq [album albums]
       (when-not (get-local (:id album))
