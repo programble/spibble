@@ -33,7 +33,8 @@
 
 (defn albums-page []
   (layout
-    (albums (album/get-top-albums))))
+    (albums (album/get-top-albums))
+    {:active :albums}))
 
 (defn search-page [query page]
   (if (empty? query)
@@ -42,7 +43,7 @@
       (layout
         (conj (album-search query albums)
               (pager (str "/search?q=" query) page pages))
-        (str "Album search: " query)))))
+        {:title (str "Album search: " query)}))))
 
 (defroutes album-routes
   (GET "/" []

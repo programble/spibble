@@ -11,20 +11,22 @@
   (l/element= :title) (l/content (or title "Spibble")))
 
 (defragment body (template :body)
-  [contents]
+  [contents active]
   (if-let [user (session/get :user)]
     [(l/id= :user) (comp (l/attr :href (str "/user/" (:name user)))
                          (l/content (:name user)))
      (l/class= :logged-out) (l/remove)]
     [(l/class= :logged-in) (l/remove)])
+  (when active
+    [(l/id= active) (l/add-class "active")])
   (l/id= :contents) (l/content contents))
 
 (let [html (l/parse (template :html))]
-  (defn layout [content & [title]]
+  (defn layout [content & [{:keys [title active] :or {:title "Spibble", :active nil}}]]
     (l/document
       html
       (l/element= :head) (l/content (head title))
-      (l/element= :body) (l/content (body content)))))
+      (l/element= :body) (l/content (body content active)))))
 
 (defragment pager (template :pager)
   [base page pages]
