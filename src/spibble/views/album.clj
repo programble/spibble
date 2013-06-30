@@ -27,8 +27,9 @@
   (l/class= :thumbnails) (l/content (album-thumbs albums)))
 
 (defragment album-search (template :search)
-  [albums]
-  (l/class= :thumbnails) (l/content (album-thumbs albums)))
+  [query albums]
+  (l/class= :thumbnails) (l/content (album-thumbs albums))
+  (l/element= :em) (l/content query))
 
 (defn albums-page []
   (layout
@@ -39,7 +40,7 @@
     (redirect "/albums")
     (let [{:keys [albums pages]} (album/search query page)]
       (layout
-        (conj (album-search albums)
+        (conj (album-search query albums)
               (pager (str "/search?q=" query) page pages))
         (str "Album search: " query)))))
 
