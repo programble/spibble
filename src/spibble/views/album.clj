@@ -38,13 +38,13 @@
     {:active :albums}))
 
 (defn search-page [query page]
-  (if (empty? query)
-    (redirect "/albums")
+  (if (seq query)
     (let [{:keys [albums pages]} (album/search query page 6)]
-      (layout
-        (conj (album-search query albums)
-              (pager (str "/search?q=" query "&") page pages))
-        {:title (str "Album search: " query)}))))
+      (layout (conj (album-search query albums)
+                    (pager (str "/search?q=" query "&") page pages))
+              {:title (str "Album search: " query)
+               :query query}))
+    (redirect "/albums")))
 
 (defroutes album-routes
   (GET "/" []
