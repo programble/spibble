@@ -20,6 +20,11 @@
   (l/element= :li) #(for [album albums]
                       (album-thumb % album)))
 
+(defragment albums (template :albums)
+  [albums]
+  (when (session/get :user)
+    [(l/class= :hero-unit) (l/remove)]))
+
 (defragment album-search (template :search)
   [albums query page pages]
   (l/class= :thumbnails) (l/content (album-thumbs albums))
@@ -32,7 +37,7 @@
 
 (defn albums-page []
   (layout
-    (l/unescaped "<p>TODO: List popular albums</p>")))
+    (albums [])))
 
 (defn search-page [query page]
   (if (empty? query)
