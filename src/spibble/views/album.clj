@@ -23,7 +23,8 @@
 (defragment albums (template :albums)
   [albums]
   (when (session/get :user)
-    [(l/class= :hero-unit) (l/remove)]))
+    [(l/class= :hero-unit) (l/remove)])
+  (l/class= :thumbnails) (l/content (album-thumbs albums)))
 
 (defragment album-search (template :search)
   [albums]
