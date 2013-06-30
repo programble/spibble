@@ -1,5 +1,5 @@
 (ns spibble.models.login
-  (:require [spibble.utilities [image-map]]
+  (:require [spibble.utilities :refer [image-map]]
             [spibble.config :refer [api-key api-secret]]
             [monger.collection :as mc]
             [noir.session :as session]
