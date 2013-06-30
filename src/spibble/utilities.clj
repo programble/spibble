@@ -14,3 +14,6 @@
 (defn image-map [image]
   "Converts the image element returned by Last.fm into a map of size to URL."
   (into {} (map #(vector (keyword (:size %)) (:text %)) image)))
+
+(defn count-pages [n per]
+  (long (Math/ceil (/ n per))))

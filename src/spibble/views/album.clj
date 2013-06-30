@@ -1,7 +1,7 @@
 (ns spibble.views.album
   (:require [spibble.models.album :as album]
             [spibble.views.common :refer [layout template pager]]
-            [spibble.utilities :refer [safe-parse-long]]
+            [spibble.utilities :refer [safe-parse-long count-pages]]
             [noir.session :as session]
             [compojure.core :refer [defroutes GET]]
             [noir.response :refer [redirect]]
@@ -31,9 +31,10 @@
   (l/class= :thumbnails) (l/content (album-thumbs albums))
   (l/element= :em) (l/content query))
 
-(defn albums-page []
+(defn albums-page [page]
   (layout
-    (albums (album/get-top-albums))
+    (conj (albums (album/get-top-albums page 6))
+          (pager "/albums?" page (count-pages (album/count-albums) 6)))
     {:active :albums}))
 
 (defn search-page [query page]
@@ -42,17 +43,17 @@
     (let [{:keys [albums pages]} (album/search query page)]
       (layout
         (conj (album-search query albums)
-              (pager (str "/search?q=" query) page pages))
+              (pager (str "/search?q=" query "&") page pages))
         {:title (str "Album search: " query)}))))
 
 (defroutes album-routes
   (GET "/" []
     (if (session/get :user)
       (redirect "/library")
-      (albums-page)))
+      (albums-page 1)))
 
-  (GET "/albums" []
-    (albums-page))
+  (GET "/albums" [p]
+    (albums-page (safe-parse-long p 1)))
 
   (GET "/search" [q p]
     (search-page q (safe-parse-long p 1))))

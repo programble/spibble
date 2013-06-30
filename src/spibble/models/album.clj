@@ -23,6 +23,9 @@
       (update-in [:tracks] from-tracks)
       (dissoc :streamable :wiki :toptags))))
 
+(defn count-albums []
+  (mc/count "albums" {}))
+
 (defn get-local
   "Get local album data."
   [id]
@@ -48,13 +51,12 @@
   (mc/insert "albums" (select-keys remote [:id :mbid :artist :name])))
 
 (defn get-top-albums
-  "Get top 6 popular albums."
-  []
+  [page per]
   (map get-remote (mq/with-collection "albums"
                     (mq/find {})
                     ;; TODO: Sort by popularity
                     (mq/sort {:id 1})
-                    (mq/limit 6))))
+                    (mq/paginate :page page :per-page per))))
 
 (defn search
   "Search Last.fm for albums in pages of 6."
