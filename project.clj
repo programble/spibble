@@ -9,6 +9,7 @@
                  [lib-noir "0.5.6"]
                  [com.novemberain/monger "1.5.0-beta1"]
                  [me.raynes/laser "1.1.1"]
-                 [clj-config "0.2.0"]]
+                 [clj-config "0.2.0"]
+                 [org.clojure/core.memoize "0.5.6"]]
   :plugins [[lein-ring "0.8.2"]]
   :ring {:handler spibble.server/handler})
