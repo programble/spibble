@@ -26,3 +26,12 @@
       html
       (l/element= :head) (l/content (head title))
       (l/element= :body) (l/content (body content)))))
+
+(defragment pager (template :pager)
+  [base page pages]
+  (if (<= page 1)
+    [(l/class= :previous) (l/remove)]
+    [(l/id= :previous) (l/attr :href (str base "&p=" (dec page)))])
+  (if (>= page pages)
+    [(l/class= :next) (l/remove)]
+    [(l/id= :next) (l/attr :href (str base "&p=" (inc page)))]))

@@ -1,6 +1,6 @@
 (ns spibble.views.album
   (:require [spibble.models.album :as album]
-            [spibble.views.common :refer [layout template]]
+            [spibble.views.common :refer [layout template pager]]
             [spibble.utilities :refer [safe-parse-long]]
             [noir.session :as session]
             [compojure.core :refer [defroutes GET]]
@@ -26,14 +26,8 @@
     [(l/class= :hero-unit) (l/remove)]))
 
 (defragment album-search (template :search)
-  [albums query page pages]
-  (l/class= :thumbnails) (l/content (album-thumbs albums))
-  (if (<= page 1)
-    [(l/class= :previous) (l/remove)]
-    [(l/id= :previous) (l/attr :href (str "/search?q=" query "&p=" (dec page)))])
-  (if (>= page pages)
-    [(l/class= :next) (l/remove)]
-    [(l/id= :next) (l/attr :href (str "/search?q=" query "&p=" (inc page)))]))
+  [albums]
+  (l/class= :thumbnails) (l/content (album-thumbs albums)))
 
 (defn albums-page []
   (layout
@@ -44,7 +38,8 @@
     (redirect "/albums")
     (let [{:keys [albums pages]} (album/search query page)]
       (layout
-        (album-search albums query page pages)
+        (conj (album-search albums)
+              (pager (str "/search?q=" query) page pages))
         (str "Album search: " query)))))
 
 (defroutes album-routes
