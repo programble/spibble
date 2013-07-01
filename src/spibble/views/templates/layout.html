@@ -12,7 +12,6 @@
       .search-query { margin-right: 10px; }
       .cover-art { height: 260px; }
       .cover-art img { width: 260px; }
-      footer { margin-top: 20px; }
     </style>
   </head>
   <body>
@@ -48,17 +47,12 @@
 
     <div class="container">
       <p></p>
-      <div id="contents"></div>
-
-      <footer>
-      <p class="muted pull-left">
-      <small><span onclick="$('a').toggleClass('icon-spin')">&copy;</span> 2013 Curtis McEnroe</small>
-      <p class="muted pull-right">
-      <a class="btn btn-mini" href="https://github.com/programble/spibble"><i class="icon-github-alt"></i> source</a>
-      </footer>
+      <div id="contents">
+      </div>
     </div>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script>$(function(){var k=[],o='38,38,40,40,37,39,37,39,66,65,13';$(document).keydown(function(e){k.push(e.keyCode);if(k.toString().indexOf(o)>=0){$('a').toggleClass('icon-spin');k=[]}})})</script>
   </body>
 </html>
