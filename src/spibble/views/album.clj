@@ -39,7 +39,7 @@
   (l/element= :table) (l/content (tracks-table (:tracks album))))
 
 (let [hero [(static :hero-unit)]
-      heading (heading-search "Top Albums" "/search")]
+      heading (heading-search "Top Albums" "/albums/search")]
   (defn albums-page [page]
     (layout
       (concat (when-not (session/get :user) hero)
@@ -52,10 +52,10 @@
 (defn search-page [query page]
   (if (seq query)
     (let [{:keys [albums pages]} (album/search query page 6)]
-      (layout (concat (heading-search (str "Album search: " query) "/search" query)
+      (layout (concat (heading-search (str "Album search: " query) "/albums/search" query)
                       [(l/node :ul :attrs {:class "thumbnails"}
                                :content (album-thumbs albums))]
-                      (pager (str "/search?q=" query "&") page pages))
+                      (pager (str "/albums/search?q=" query "&") page pages))
               :title (str "Album search: " query)
               :active :albums))
     (redirect "/albums")))
@@ -71,14 +71,12 @@
 
 (defroutes album-routes
   (GET "/" []
-    (if (session/get :user)
-      (redirect "/library")
-      (albums-page 1)))
+    (albums-page 1))
 
   (GET "/albums" [p]
     (albums-page (safe-parse-long p 1)))
 
-  (GET "/search" [q p]
+  (GET "/albums/search" [q p]
     (search-page q (safe-parse-long p 1)))
 
   (GET "/album/:id" [id]
