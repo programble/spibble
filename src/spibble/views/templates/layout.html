@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <title></title>
+
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+    <style type="text/css">
+      .cover-art { height: 260px; }
+      .cover-art img { width: 260px; }
+      footer { margin-top: 20px; }
+    </style>
+  </head>
+  <body>
+    <div class="navbar navbar-static-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">Spibble</a>
+
+          <ul class="nav">
+            <li id="albums"><a href="/albums">Albums</a></li>
+            <li id="about"><a href="/about">About</a></li>
+          </ul>
+
+          <form class="navbar-search pull-left" action="/search" method="get">
+            <input class="search-query span3" type="search" name="q" placeholder="search">
+          </form>
+
+          <div class="pull-right">
+            <a id="login" class="btn logged-out" href="/login">
+              <i class="icon-signin"></i> Log in
+            </a>
+
+            <ul class="nav logged-in">
+              <li class="active"><a id="user"></a></li>
+            </ul>
+            <a id="logout" class="btn logged-in" href="/logout">
+              <i class="icon-off"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <p></p>
+      <div id="contents"></div>
+
+      <footer>
+      <p class="muted pull-left">
+      <small><span onclick="$('a').toggleClass('icon-spin')">&copy;</span> 2013 Curtis McEnroe</small>
+      <p class="muted pull-right">
+      <a class="btn btn-mini" href="https://github.com/programble/spibble"><i class="icon-github-alt"></i> source</a>
+      </footer>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
