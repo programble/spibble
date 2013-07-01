@@ -14,16 +14,18 @@
 
 (defn vector-fix [v] (if (sequential? v) v [v]))
 
-(defn from-lastfm
-  "Process album returned by Last.fm for sanity."
-  [album]
-  (letfn [(from-tracks [t]
-            (map #(dissoc % :streamable :attr) (:track t)))]
-    (-> album
-      (update-in [:id] #(Long/parseLong %))
-      (update-in [:image] image-from-lastfm)
-      (update-in [:tracks] from-tracks)
-      (dissoc :streamable :wiki :toptags))))
+(defn track-from-lastfm [track]
+  (-> track
+      (select-keys [:name :mbid :url])
+      (assoc :duration (Long/parseLong (:duration track))
+             :artist (-> track :artist :name))))
+
+(defn from-lastfm [album]
+  (-> album
+      (select-keys [:name :artist :mbid :url])
+      (assoc :id (Long/parseLong (:id album))
+             :image (image-from-lastfm (:image album))
+             :tracks (map track-from-lastfm (vector-fix (-> album :tracks :track))))))
 
 (defn count-albums []
   (mc/count "albums" {}))
