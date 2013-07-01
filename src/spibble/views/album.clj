@@ -1,6 +1,6 @@
 (ns spibble.views.album
   (:require [spibble.models.album :as album]
-            [spibble.views.common :refer [template layout pager]]
+            [spibble.views.common :refer [template static layout heading-search pager]]
             [spibble.utilities :refer [safe-parse-long count-pages]]
             [me.raynes.laser :as l :refer [defragment]]
             [noir.session :as session]
@@ -25,17 +25,6 @@
   (l/element= :li) #(for [album albums]
                       (album-thumb % album)))
 
-(defragment albums (template :albums)
-  [albums]
-  (when (session/get :user)
-    [(l/class= :hero-unit) (l/remove)])
-  (l/class= :thumbnails) (l/content (album-thumbs albums)))
-
-(defragment album-search (template :search)
-  [query albums]
-  (l/class= :thumbnails) (l/content (album-thumbs albums))
-  (l/element= :em) (l/content query))
-
 (defn tracks-table [tracks]
   (for [track tracks]
     (l/node :tr
@@ -49,19 +38,25 @@
   (l/element= :h2) (l/content (:artist album))
   (l/element= :table) (l/content (tracks-table (:tracks album))))
 
-(defn albums-page [page]
-  (layout
-    (conj (albums (album/get-top-albums page 6))
-          (pager "/albums?" page (count-pages (album/count-albums) 6)))
-    :active :albums))
+(let [hero [(static :hero-unit)]
+      heading (heading-search "Top Albums" "/search")]
+  (defn albums-page [page]
+    (layout
+      (concat (when-not (session/get :user) hero)
+              heading
+              [(l/node :ul :attrs {:class "thumbnails"}
+                       :content (album-thumbs (album/get-top-albums page 6)))]
+              (pager "/albums?" page (count-pages (album/count-albums) 6)))
+      :active :albums)))
 
 (defn search-page [query page]
   (if (seq query)
     (let [{:keys [albums pages]} (album/search query page 6)]
-      (layout (conj (album-search query albums)
-                    (pager (str "/search?q=" query "&") page pages))
+      (layout (concat (heading-search (str "Album search: " query) "/search" query)
+                      [(l/node :ul :attrs {:class "thumbnails"}
+                               :content (album-thumbs albums))]
+                      (pager (str "/search?q=" query "&") page pages))
               :title (str "Album search: " query)
-              :query query
               :active :albums))
     (redirect "/albums")))
 

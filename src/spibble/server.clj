@@ -11,12 +11,9 @@
 (let [uri (get (System/getenv) "MONGOLAB_URI" "mongodb://127.0.0.1/spibble_development")]
   (mg/connect-via-uri! uri))
 
-(require '[spibble.views.common :refer [layout template]]
+(require '[spibble.views.common :refer [template static layout]]
          '[spibble.views.login :refer [login-routes]]
          '[spibble.views.album :refer [album-routes]])
-
-(defn static [file]
-  (-> file template slurp l/unescaped))
 
 (let [about (static :about)]
   (defroutes static-routes

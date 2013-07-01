@@ -6,8 +6,11 @@
 (defn template [file]
   (resource (str "spibble/views/templates/" (name file) ".html")))
 
+(defn static [file]
+  (-> file template slurp l/unescaped))
+
 (let [html (l/parse (template :layout))]
-  (defn layout [content & {:keys [title active query]}]
+  (defn layout [content & {:keys [title active]}]
     (l/document
       html
       (l/element= :title) (l/content (or title "Spibble"))
@@ -21,10 +24,13 @@
       (when active
         [(l/id= active) (l/add-class "active")])
 
-      (when query
-        [(l/class= :search-query) (l/attr :value query)])
-
       (l/id= :contents) (l/content content))))
+
+(defragment heading-search (template :heading-search)
+  [heading url & [query]]
+  (l/element= :span) (l/content heading)
+  (l/element= :form) (l/attr :action url)
+  (l/class= :search-query) (when query (l/attr :value query)))
 
 (defragment pager (template :pager)
   [base page pages]
