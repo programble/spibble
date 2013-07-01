@@ -1,11 +1,11 @@
 (ns spibble.views.album
   (:require [spibble.models.album :as album]
-            [spibble.views.common :refer [layout template pager]]
-            [spibble.utilities :refer [safe-parse-long count-pages]]
+            [spibble.views.common :refer [template layout pager]]
+            [spibble.utilities :refer [safe-parse-long count-page]]
+            [me.raynes.laser :as l :refer [defragment]]
             [noir.session :as session]
-            [compojure.core :refer [defroutes GET]]
             [noir.response :refer [redirect]]
-            [me.raynes.laser :refer [defragment] :as l]))
+            [compojure.core :refer [defroutes GET]]))
 
 (defragment api-error (template :api-error)
   [error]
