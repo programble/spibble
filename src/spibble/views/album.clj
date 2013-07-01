@@ -7,13 +7,18 @@
             [noir.response :refer [redirect]]
             [me.raynes.laser :refer [defragment] :as l]))
 
-(defn album-thumb [node album]
-  (let [{:keys [name artist id image]} album]
-    (l/at node
-          (l/element= :a) (l/attr :href (str "/album/" id))
-          (l/element= :img) (l/attr :src (:extralarge image))
-          (l/class= :album) (l/content name)
-          (l/element= :h4) (l/content artist))))
+(defragment api-error (template :api-error)
+  [error]
+  (l/class= :api-error) (l/content (:message error)))
+
+(defn album-thumb [node {:keys [name artist id image] :as album}]
+  (l/at node
+        (if (:error album)
+          [(l/class= :media) (l/content (api-error album))]
+          [(l/element= :a) (l/attr :href (str "/album/" id))
+           (l/element= :img) (l/attr :src (:extralarge image))
+           (l/class= :album) (l/content name)
+           (l/element= :h4) (l/content artist)])))
 
 (defragment album-thumbs (template :album-thumb)
   [albums]

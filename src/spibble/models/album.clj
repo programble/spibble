@@ -39,8 +39,10 @@
   (let [query (if-not (empty? mbid)
                 {:mbid mbid}
                 {:album name :artist artist})
-        remote (:album (lastfm "album.getInfo" query))]
-    (merge (from-lastfm remote) local)))
+        resp (lastfm "album.getInfo" query)]
+    (if (:error resp)
+      resp
+      (merge (from-lastfm (:album resp)) local))))
 
 (defn get-album
   "Get local and remote data for an album."
@@ -63,11 +65,13 @@
 (defn search
   "Search Last.fm for albums."
   [query page per]
-  (let [results (:results (lastfm "album.search" {:album query :limit per :page page}))
-        albums (map from-lastfm (-> results :albummatches :album vector-fix))
-        pages (-> results :opensearch:totalResults Long/parseLong (count-pages per))]
-    ;; Create local data for every search result
-    (doseq [album albums]
-      (when-not (get-local (:id album))
-        (add-local album)))
-    {:albums albums :pages pages}))
+  (let [resp (lastfm "album.search" {:album query :limit per :page page})]
+    (if (:error resp)
+      {:albums [resp], :pages 0}
+      (let [albums (map from-lastfm (-> resp :results :albummatches :album vector-fix))
+            pages (-> resp :results :opensearch:totalResults Long/parseLong (count-pages per))]
+        ;; Create local data for every search result
+        (doseq [album albums]
+          (when-not (get-local (:id album))
+            (add-local album)))
+        {:albums albums, :pages pages}))))
