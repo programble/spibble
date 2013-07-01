@@ -1,7 +1,7 @@
 (ns spibble.views.album
   (:require [spibble.models.album :as album]
             [spibble.views.common :refer [template layout pager]]
-            [spibble.utilities :refer [safe-parse-long count-page]]
+            [spibble.utilities :refer [safe-parse-long count-pages]]
             [me.raynes.laser :as l :refer [defragment]]
             [noir.session :as session]
             [noir.response :refer [redirect]]
