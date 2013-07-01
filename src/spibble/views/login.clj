@@ -1,8 +1,8 @@
 (ns spibble.views.login
   (:require [spibble.models.login :as login]
             [noir.session :as session]
-            [compojure.core :refer [defroutes GET]]
-            [noir.response :refer [redirect]]))
+            [noir.response :refer [redirect]]
+            [compojure.core :refer [defroutes GET]]))
 
 (defroutes login-routes
   (GET "/login" []
@@ -11,8 +11,9 @@
       (redirect login/auth-url)))
 
   (GET "/login/callback" [token]
-    (login/login token)
-    (redirect "/"))
+    (when token
+      (login/login token)
+      (redirect "/")))
 
   (GET "/logout" []
     (login/logout)
