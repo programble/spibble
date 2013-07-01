@@ -1,5 +1,5 @@
 (ns spibble.models.login
-  (:require [spibble.utilities :refer [image-map]]
+  (:require [spibble.utilities :refer [image-from-lastfm]]
             [spibble.config :refer [api-key api-secret]]
             [monger.collection :as mc]
             [noir.session :as session]
@@ -13,7 +13,7 @@
 (defn from-lastfm [user]
   (-> user
       (select-keys [:realname :url])
-      (assoc :image (image-map (:image user)))))
+      (assoc :image (image-from-lastfm (:image user)))))
 
 (defn create-user [session]
   (let [user {:session (:key session)

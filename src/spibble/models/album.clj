@@ -1,7 +1,7 @@
 (ns spibble.models.album
   (:require [clojure.core.memoize :as memo]
             [spibble.config :refer [api-key]]
-            [spibble.utilities :refer [image-map count-pages]]
+            [spibble.utilities :refer [count-pages image-from-lastfm]]
             [monger.collection :as mc]
             [monger.query :as mq]
             [me.raynes.least :as least]))
@@ -21,7 +21,7 @@
             (map #(dissoc % :streamable :attr) (:track t)))]
     (-> album
       (update-in [:id] #(Long/parseLong %))
-      (update-in [:image] image-map)
+      (update-in [:image] image-from-lastfm)
       (update-in [:tracks] from-tracks)
       (dissoc :streamable :wiki :toptags))))
 
