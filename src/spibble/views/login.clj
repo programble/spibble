@@ -11,9 +11,8 @@
       (redirect login/auth-url)))
 
   (GET "/login/callback" [token]
-    (when token
-      (login/login token)
-      (redirect "/")))
+    (when (and token (login/login token))
+        (redirect (str "/library/" (session/get-in [:user :name])))))
 
   (GET "/logout" []
     (login/logout)
