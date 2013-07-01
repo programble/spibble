@@ -1,7 +1,7 @@
 (ns spibble.server
   (:require [monger.core :as mg]
             [me.raynes.laser :as l]
-            [compojure.core :refer [routes]]
+            [compojure.core :refer [defroutes routes GET]]
             [compojure.route :refer [not-found resources]]
             [ring.middleware.params :refer [wrap-params]]
             [noir.session :refer [wrap-noir-flash wrap-noir-session]]
@@ -15,13 +15,23 @@
          '[spibble.views.login :refer [login-routes]]
          '[spibble.views.album :refer [album-routes]])
 
-(let [html (-> (template :404) slurp l/unescaped)]
+(defn static [file]
+  (-> file template slurp l/unescaped))
+
+(let [about (static :about)]
+  (defroutes static-routes
+    (GET "/about" []
+      (layout about
+              :active :about))))
+
+(let [html (static :404)]
   (defn four-zero-four [req]
     (layout html)))
 
 (def handler
   (-> (routes login-routes
               album-routes
+              static-routes
               (resources "/")
               (not-found four-zero-four))
       (wrap-params)
