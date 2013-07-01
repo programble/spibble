@@ -13,7 +13,8 @@
 
 (require '[spibble.views.common :refer [template static layout]]
          '[spibble.views.login :refer [login-routes]]
-         '[spibble.views.album :refer [album-routes]])
+         '[spibble.views.album :refer [album-routes]]
+         '[spibble.views.library :refer [library-routes]])
 
 (let [about (static :about)]
   (defroutes static-routes
@@ -28,6 +29,7 @@
 (def handler
   (-> (routes login-routes
               album-routes
+              library-routes
               static-routes
               (resources "/")
               (not-found four-zero-four))

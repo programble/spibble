@@ -1,16 +1,9 @@
 (ns spibble.models.album
-  (:require [clojure.core.memoize :as memo]
-            [spibble.config :refer [api-key]]
-            [spibble.utilities :refer [count-pages image-from-lastfm]]
+  (:require [spibble.utilities :refer [lastfm count-pages image-from-lastfm]]
             [monger.collection :as mc]
-            [monger.query :as mq]
-            [me.raynes.least :as least]))
+            [monger.query :as mq]))
 
 (mc/ensure-index "albums" {:id 1})
-
-(def lastfm
-  "TTL memoized function for making Last.fm API calls."
-  (memo/ttl #(least/read %1 api-key %2) :ttl/threshold 3600000))
 
 (defn vector-fix [v] (if (sequential? v) v [v]))
 

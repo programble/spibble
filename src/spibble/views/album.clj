@@ -20,10 +20,14 @@
            (l/class= :album) (l/content name)
            (l/element= :h4) (l/content artist)])))
 
-(defragment album-thumbs (template :album-thumb)
-  [albums]
-  (l/element= :li) #(for [album albums]
-                      (album-thumb % album)))
+(let [none (static :none)]
+  (defragment album-thumbs (template :album-thumb)
+    [albums]
+    (l/element= :li) (if (seq albums)
+                       #(for [album albums]
+                          (album-thumb % album))
+                       (comp (l/attr :class "span12")
+                             (l/content none)))))
 
 (defn tracks-table [tracks]
   (for [track tracks]

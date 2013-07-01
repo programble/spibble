@@ -1,4 +1,11 @@
-(ns spibble.utilities)
+(ns spibble.utilities
+  (:require [clojure.core.memoize :as memo]
+            [spibble.config :refer [api-key]]
+            [me.raynes.least :as least]))
+
+(def lastfm
+  "TTL memoized function for making Last.fm API calls."
+  (memo/ttl #(least/read %1 api-key %2) :ttl/threshold 3600000))
 
 ;; From refheap.utilities
 (defn safe-parse-long

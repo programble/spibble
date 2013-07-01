@@ -12,7 +12,9 @@
 
   (GET "/login/callback" [token]
     (when (and token (login/login token))
-        (redirect (str "/library/" (session/get-in [:user :name])))))
+      (if (seq (session/get-in [:user :library]))
+        (redirect (str "/library/" (session/get-in [:user :name])))
+        (redirect "/"))))
 
   (GET "/logout" []
     (login/logout)
