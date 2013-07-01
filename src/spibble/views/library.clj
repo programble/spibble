@@ -19,7 +19,7 @@
         (concat (heading-search title (str "/library/" name "/search"))
                 [(l/node :ul :attrs {:class "thumbnails"}
                          :content (album-thumbs (library/get-library user page 6)))]
-                (pager (str "/library/" name) page (count-pages (library/count-library user) 6)))
+                (pager (str "/library/" name "?") page (count-pages (library/count-library user) 6)))
         :title title
         :active (when (self? user) :library)))))
 
