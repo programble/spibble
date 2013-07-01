@@ -40,15 +40,15 @@
   (layout
     (conj (albums (album/get-top-albums page 6))
           (pager "/albums?" page (count-pages (album/count-albums) 6)))
-    {:active :albums}))
+    :active :albums))
 
 (defn search-page [query page]
   (if (seq query)
     (let [{:keys [albums pages]} (album/search query page 6)]
       (layout (conj (album-search query albums)
                     (pager (str "/search?q=" query "&") page pages))
-              {:title (str "Album search: " query)
-               :query query}))
+              :title (str "Album search: " query)
+              :query query))
     (redirect "/albums")))
 
 (defroutes album-routes

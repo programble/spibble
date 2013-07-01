@@ -7,7 +7,7 @@
   (resource (str "spibble/views/templates/" (name file) ".html")))
 
 (let [html (l/parse (template :layout))]
-  (defn layout [content & [{:keys [title active query]}]]
+  (defn layout [content & {:keys [title active query]}]
     (l/document
       html
       (l/element= :title) (l/content (or title "Spibble"))
