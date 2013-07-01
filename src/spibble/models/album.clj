@@ -25,7 +25,7 @@
       (select-keys [:name :artist :mbid :url])
       (assoc :id (Long/parseLong (:id album))
              :image (image-from-lastfm (:image album))
-             :tracks (map track-from-lastfm (vector-fix (-> album :tracks :track))))))
+             :tracks (map track-from-lastfm (-> album :tracks :track vector-fix)))))
 
 (defn count-albums []
   (mc/count "albums" {}))
