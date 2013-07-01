@@ -1,13 +1,12 @@
 (ns spibble.server
-  (:require [me.raynes.laser :as l]
-            [noir.util.middleware :refer [wrap-strip-trailing-slash]]
+  (:require [monger.core :as mg]
+            [me.raynes.laser :as l]
+            [compojure.core :refer [routes]]
+            [compojure.route :refer [not-found resources]]
             [ring.middleware.params :refer [wrap-params]]
-            [noir.session :refer [wrap-noir-session wrap-noir-flash] :as session]
-            [monger.core :as mg]
-            [monger.collection :as mc]
+            [noir.session :refer [wrap-noir-flash wrap-noir-session]]
             [monger.ring.session-store :refer [monger-store]]
-            [compojure.core :refer [defroutes routes GET]]
-            [compojure.route :refer [not-found resources]]))
+            [noir.util.middleware :refer [wrap-strip-trailing-slash]]))
 
 (let [uri (get (System/getenv) "MONGOLAB_URI" "mongodb://127.0.0.1/spibble_development")]
   (mg/connect-via-uri! uri))
