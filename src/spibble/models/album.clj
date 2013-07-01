@@ -49,7 +49,8 @@
 (defn get-album
   "Get local and remote data for an album."
   [id]
-  (get-remote (get-local id)))
+  (when-let [local (get-local id)]
+    (get-remote local)))
 
 (defn add-local
   "Add local album data for a Last.fm album."

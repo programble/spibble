@@ -36,6 +36,19 @@
   (l/class= :thumbnails) (l/content (album-thumbs albums))
   (l/element= :em) (l/content query))
 
+(defn tracks-table [tracks]
+  (for [track tracks]
+    (l/node :tr
+            :content [(l/node :td :content (:name track))
+                      (l/node :td :content (str (:duration track)))]))) ; TODO: Format duration
+
+(defragment show-album (template :album)
+  [album]
+  (l/element= :img) (l/attr :src (-> album :image :extralarge))
+  (l/element= :h1) (l/content (:name album))
+  (l/element= :h2) (l/content (:artist album))
+  (l/element= :table) (l/content (tracks-table (:tracks album))))
+
 (defn albums-page [page]
   (layout
     (conj (albums (album/get-top-albums page 6))
@@ -51,6 +64,14 @@
               :query query))
     (redirect "/albums")))
 
+(defn album-page [id]
+  (when-let [album (album/get-album id)]
+    (if (:error album)
+      (layout (api-error album))
+      (layout
+        (show-album album)
+        :title (:name album)))))
+
 (defroutes album-routes
   (GET "/" []
     (if (session/get :user)
@@ -61,4 +82,7 @@
     (albums-page (safe-parse-long p 1)))
 
   (GET "/search" [q p]
-    (search-page q (safe-parse-long p 1))))
+    (search-page q (safe-parse-long p 1)))
+
+  (GET "/album/:id" [id]
+    (album-page (safe-parse-long id))))
