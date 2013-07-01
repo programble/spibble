@@ -61,7 +61,8 @@
       (layout (conj (album-search query albums)
                     (pager (str "/search?q=" query "&") page pages))
               :title (str "Album search: " query)
-              :query query))
+              :query query
+              :active :albums))
     (redirect "/albums")))
 
 (defn album-page [id]
@@ -70,7 +71,8 @@
       (layout (api-error album))
       (layout
         (show-album album)
-        :title (:name album)))))
+        :title (:name album)
+        :active :albums))))
 
 (defroutes album-routes
   (GET "/" []
