@@ -28,7 +28,7 @@
 
 (defragment heading-search (template :heading-search)
   [heading url & [query]]
-  (l/element= :span) (l/content heading)
+  (l/element= :h1) (l/content heading)
   (l/element= :form) (l/attr :action url)
   (l/class= :search-query) (when query (l/attr :value query)))
 
