@@ -27,10 +27,10 @@
     (layout html)))
 
 (def handler
-  (-> (routes login-routes
-              album-routes
-              library-routes
-              static-routes
+  (-> (routes #'login-routes
+              #'album-routes
+              #'library-routes
+              #'static-routes
               (resources "/")
               (not-found four-zero-four))
       (wrap-params)
