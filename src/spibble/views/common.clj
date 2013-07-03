@@ -16,8 +16,8 @@
       (l/element= :title) (l/content (or title "Spibble"))
 
       (if-let [user (session/get :user)]
-        [(l/id= :user) (comp (l/attr :href (str "/library/" (:name user)))
-                             (l/content (:name user)))
+        [(l/id= :user) (l/content (:name user))
+         (l/class= :library) (l/attr :href (str "/library/" (:name user)))
          (l/class= :logged-out) (l/remove)]
         [(l/class= :logged-in) (l/remove)])
 
