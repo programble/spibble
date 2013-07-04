@@ -1,7 +1,7 @@
 (ns spibble.views.album
   (:require [spibble.models.album :as album]
             [spibble.views.common :refer [template static layout heading-search pager]]
-            [spibble.utilities :refer [safe-parse-long count-pages]]
+            [spibble.utilities :refer [parse-pos-long count-pages]]
             [me.raynes.laser :as l :refer [defragment]]
             [noir.session :as session]
             [noir.response :refer [redirect]]
@@ -81,13 +81,13 @@
     (top-albums-page 1))
 
   (GET "/albums" [p]
-    (when-let [p (if p (safe-parse-long p) 1)]
+    (when-let [p (if p (parse-pos-long p) 1)]
       (top-albums-page p)))
 
   (GET "/albums/search" [q p]
-    (when-let [p (if p (safe-parse-long p) 1)]
+    (when-let [p (if p (parse-pos-long p) 1)]
       (when (seq q)
         (search-page q p))))
 
   (GET "/album/:id" [id]
-    (album-page (safe-parse-long id))))
+    (album-page (parse-pos-long id))))

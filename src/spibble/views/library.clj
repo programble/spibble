@@ -3,7 +3,7 @@
             [spibble.models.user :as user]
             [spibble.views.common :refer [template layout heading-search pager]]
             [spibble.views.album :refer [render-album-thumbs]]
-            [spibble.utilities :refer [safe-parse-long count-pages]]
+            [spibble.utilities :refer [parse-pos-long count-pages]]
             [me.raynes.laser :as l :refer [defragment]]
             [noir.session :as session]
             [noir.response :refer [redirect]]
@@ -27,5 +27,5 @@
 
 (defroutes library-routes
   (GET "/library/:user" [user p]
-    (when-let [p (if p (safe-parse-long p) 1)]
+    (when-let [p (if p (parse-pos-long p) 1)]
       (library-page user p))))

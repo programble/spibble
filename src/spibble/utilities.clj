@@ -7,17 +7,17 @@
   "TTL memoized function for making Last.fm API calls."
   (cache/memoize #(least/read %1 api-key %2)))
 
-;; From refheap.utilities
-(defn safe-parse-long
-  "Safely parse a long, returning default or nil for malformed input."
-  ([n] (safe-parse-long n nil))
-  ([n default]
-   (try
-     (if n
-       (Long/parseLong n)
-       default)
-     (catch NumberFormatException _
-       default))))
+(defn parse-long [n]
+  (when n
+    (try
+      (Long/parseLong n)
+      (catch NumberFormatException _
+        nil))))
+
+(defn parse-pos-long [n]
+  (let [parsed (parse-long n)]
+    (when (pos? parsed)
+      parsed)))
 
 (defn count-pages [n per]
   (long (Math/ceil (/ n per))))
