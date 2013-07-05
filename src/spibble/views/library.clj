@@ -34,7 +34,7 @@
 
 (defn remove-page [id]
   (when-let [album (album/get-local id)]
-    (let [updated (library/add-album (session/get :user) album)]
+    (let [updated (library/remove-album (session/get :user) album)]
       (session/update-in! [:user] #(merge % updated))
       (redirect "/library"))))
 
