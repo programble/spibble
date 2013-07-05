@@ -1,6 +1,7 @@
 (ns spibble.views.library
   (:require [spibble.models.library :as library]
             [spibble.models.user :as user]
+            [spibble.models.album :as album]
             [spibble.views.common :refer [template layout heading-search pager]]
             [spibble.views.album :refer [render-album-thumbs]]
             [spibble.utilities :refer [parse-pos-long count-pages]]
@@ -25,7 +26,29 @@
         :title title
         :active (when (self? user) :library)))))
 
+(defn add-page [id]
+  (when-let [album (album/get-local id)]
+    (library/add-album (session/get :user) album)
+    (redirect "/library")))
+
+(defn remove-page [id]
+  (when-let [album (album/get-local id)]
+    (library/remove-album (session/get :user) album)
+    (redirect "/library")))
+
 (defroutes library-routes
+  (GET "/library" []
+    (when-let [user (session/get :user)]
+      (redirect (str "/library/" (:name user)))))
+
   (GET "/library/:user" [user p]
     (when-let [p (if p (parse-pos-long p) 1)]
-      (library-page user p))))
+      (library-page user p)))
+
+  (GET "/library/add/:id" [id]
+    (when (session/get :user)
+      (add-page (parse-pos-long id))))
+
+  (GET "/library/remove/:id" [id]
+    (when (session/get :user)
+      (remove-page (parse-pos-long id)))))
