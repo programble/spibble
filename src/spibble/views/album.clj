@@ -36,7 +36,14 @@
                           (l/node :td :content (str (:duration track)))])))
 
 (defragment render-album (template :album)
-  [{:keys [name artist image tracks]}]
+  [{:keys [id name artist image tracks]}]
+  (if-let [user (session/get :user)]
+    (if (some #{id} (:library user))
+      [(l/id= :library-remove) (l/attr :href (str "/library/remove/" id))
+       (l/id= :library-add) (l/remove)]
+      [(l/id= :library-add) (l/attr :href (str "/library/add/" id))
+       (l/id= :library-remove) (l/remove)])
+    [(l/class= :logged-in) (l/remove)])
   (l/element= :h1) (l/content name)
   (l/element= :h2) (l/content artist)
   (l/element= :img) (l/attr :src (:extralarge image))
