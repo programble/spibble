@@ -1,6 +1,8 @@
 (ns spibble.models.user
-  (:require [spibble.utilities :refer [lastfm image-from-lastfm]]
-            [monger.collection :as mc]))
+  (:require [spibble.config :refer [api-key api-secret]]
+            [spibble.utilities :refer [lastfm image-from-lastfm]]
+            [monger.collection :as mc]
+            [me.raynes.least.authorize :as auth]))
 
 (mc/ensure-index "users" {:name 1})
 
@@ -22,5 +24,9 @@
   (when-let [local (get-local name)]
     (get-remote local)))
 
-(defn add-user [{:keys [key name]}]
-  (mc/insert-and-return "users" {:session key, :name name}))
+(defn login [token]
+  (when-let [session (auth/get-session api-key api-secret token)]
+    (or (get-user (:name session))
+        (get-remote (mc/insert-and-return "users"
+                                          {:session (:key session)
+                                           :name (:name session)})))))

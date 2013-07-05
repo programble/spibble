@@ -1,5 +1,5 @@
 (ns spibble.views.login
-  (:require [spibble.models.login :as login]
+  (:require [spibble.models.user :as user]
             [spibble.config :refer [api-key]]
             [noir.session :as session]
             [noir.response :refer [redirect]]
@@ -13,7 +13,7 @@
       (redirect auth-url)))
 
   (GET "/login/callback" [token]
-    (when-let [user (and token (login/login token))]
+    (when-let [user (and token (user/login token))]
       (session/put! :user user)
       (if (seq (:library user))
         (redirect (str "/library/" (:name user)))
