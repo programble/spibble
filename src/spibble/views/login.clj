@@ -1,21 +1,24 @@
 (ns spibble.views.login
   (:require [spibble.models.login :as login]
+            [spibble.config :refer [api-key]]
             [noir.session :as session]
             [noir.response :refer [redirect]]
             [compojure.core :refer [defroutes GET]]))
 
+(def auth-url (str "http://www.last.fm/api/auth/?api_key=" api-key))
+
 (defroutes login-routes
   (GET "/login" []
-    (if (session/get :user)
-      (redirect "/")
-      (redirect login/auth-url)))
+    (when-not (session/get :user)
+      (redirect auth-url)))
 
   (GET "/login/callback" [token]
-    (when (and token (login/login token))
-      (if (seq (session/get-in [:user :library]))
-        (redirect (str "/library/" (session/get-in [:user :name])))
+    (when-let [user (and token (login/login token))]
+      (session/put! :user user)
+      (if (seq (:library user))
+        (redirect (str "/library/" (:name user)))
         (redirect "/"))))
 
   (GET "/logout" []
-    (login/logout)
+    (session/remove! :user)
     (redirect "/")))
