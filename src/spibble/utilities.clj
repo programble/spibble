@@ -15,7 +15,7 @@
         nil))))
 
 (defn parse-pos-long [n]
-  (let [parsed (parse-long n)]
+  (when-let [parsed (parse-long n)]
     (when (pos? parsed)
       parsed)))
 
