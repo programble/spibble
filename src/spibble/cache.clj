@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [memoize])
   (:require [monger.collection :as mc]))
 
-(mc/ensure-index "cache" {:created 1} {:expireAfterSeconds 3600})
+(mc/ensure-index "cache" {:created 1} {:expireAfterSeconds 21600})
 (mc/ensure-index "cache" {:hash 1})
 
 ;; This assumes that you'll never pass the same arguments to two different
