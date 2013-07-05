@@ -55,8 +55,7 @@
   [page per]
   (map get-remote (mq/with-collection "albums"
                     (mq/find {})
-                    ;; TODO: Sort by popularity
-                    (mq/sort {:id 1})
+                    (mq/sort {:owners -1})
                     (mq/paginate :page page :per-page per))))
 
 (defn search
@@ -73,8 +72,5 @@
             (add-local album)))
         {:albums albums, :pages pages}))))
 
-(defn count-owners [album]
-  (mc/count "users" {:library {$all [(:id album)]}}))
-
 (defn get-owners [album]
-  (mc/find "users" {:library {$all [(:id album)]}}))
+  (mc/find-maps "users" {:library {$all [(:id album)]}}))
