@@ -28,13 +28,15 @@
 
 (defn add-page [id]
   (when-let [album (album/get-local id)]
-    (library/add-album (session/get :user) album)
-    (redirect "/library")))
+    (let [updated (library/add-album (session/get :user) album)]
+      (session/update-in! [:user] #(merge % updated))
+      (redirect "/library"))))
 
 (defn remove-page [id]
   (when-let [album (album/get-local id)]
-    (library/remove-album (session/get :user) album)
-    (redirect "/library")))
+    (let [updated (library/add-album (session/get :user) album)]
+      (session/update-in! [:user] #(merge % updated))
+      (redirect "/library"))))
 
 (defroutes library-routes
   (GET "/library" []

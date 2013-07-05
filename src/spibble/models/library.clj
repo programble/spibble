@@ -6,10 +6,10 @@
             [monger.operators :refer [$addToSet $pull $in]]))
 
 (defn add-album [user album]
-  (mc/update "users" {:name (:name user)} {$addToSet {:library (:id album)}}))
+  (mc/find-and-modify "users" {:name (:name user)} {$addToSet {:library (:id album)}}))
 
 (defn remove-album [user album]
-  (mc/update "users" {:name (:name user)} {$pull {:library (:id album)}}))
+  (mc/find-and-modify "users" {:name (:name user)} {$pull {:library (:id album)}}))
 
 (defn count-library [user]
   (count (:library user)))
