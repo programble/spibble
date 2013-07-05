@@ -1,6 +1,7 @@
 (ns spibble.models.album
   (:require [spibble.utilities :refer [lastfm count-pages image-from-lastfm]]
             [monger.collection :as mc]
+            [monger.operators :refer [$all]]
             [monger.query :as mq]))
 
 (mc/ensure-index "albums" {:id 1})
@@ -71,3 +72,9 @@
           (when-not (get-local (:id album))
             (add-local album)))
         {:albums albums, :pages pages}))))
+
+(defn count-owners [album]
+  (mc/count "users" {:library {$all [(:id album)]}}))
+
+(defn get-owners [album]
+  (mc/find "users" {:library {$all [(:id album)]}}))
