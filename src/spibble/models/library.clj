@@ -3,10 +3,10 @@
             [spibble.models.album :as album]
             [monger.collection :as mc]
             [monger.query :as mq]
-            [monger.operators :refer [$push $pull $in]]))
+            [monger.operators :refer [$addToSet $pull $in]]))
 
 (defn add-album [user album]
-  (mc/update "users" {:name (:name user)} {$push {:library (:id album)}}))
+  (mc/update "users" {:name (:name user)} {$addToSet {:library (:id album)}}))
 
 (defn remove-album [user album]
   (mc/update "users" {:name (:name user)} {$pull {:library (:id album)}}))
