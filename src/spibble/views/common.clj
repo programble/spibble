@@ -32,7 +32,7 @@
   [(l/element= :h1) (l/content heading)]
   [(l/element= :form) (l/attr :action url)]
   (when query
-    [(l/class= :search-qyer) (l/attr :value query)]))
+    [(l/class= :search-query) (l/attr :value query)]))
 
 (defragment pager (template :pager)
   [base page pages]
