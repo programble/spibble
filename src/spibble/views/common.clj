@@ -13,24 +13,26 @@
   (defn layout [content & {:keys [title active]}]
     (l/document
       html
-      (l/element= :title) (l/content (or title "Spibble"))
+      [(l/element= :title) (l/content (or title "Spibble"))]
 
       (if-let [user (session/get :user)]
-        [(l/id= :user) (l/content (:name user))
-         (l/class= :library) (l/attr :href (str "/library/" (:name user)))
-         (l/class= :logged-out) (l/remove)]
+        (l/compose-pews
+          [(l/id= :user) (l/content (:name user))]
+          [(l/class= :library) (l/attr :href (str "/library/" (:name user)))]
+          [(l/class= :logged-out) (l/remove)])
         [(l/class= :logged-in) (l/remove)])
 
       (when active
         [(l/id= active) (l/add-class "active")])
 
-      (l/id= :contents) (l/content content))))
+      [(l/id= :contents) (l/content content)])))
 
 (defragment heading-search (template :heading-search)
   [heading url & [query]]
-  (l/element= :h1) (l/content heading)
-  (l/element= :form) (l/attr :action url)
-  (l/class= :search-query) (when query (l/attr :value query)))
+  [(l/element= :h1) (l/content heading)]
+  [(l/element= :form) (l/attr :action url)]
+  (when query
+    [(l/class= :search-qyer) (l/attr :value query)]))
 
 (defragment pager (template :pager)
   [base page pages]

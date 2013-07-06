@@ -9,25 +9,26 @@
 
 (defragment render-api-error (template :api-error)
   [error]
-  (l/class= :api-error) (l/content (:message error)))
+  [(l/class= :api-error) (l/content (:message error))])
 
 (defn album-thumb-node [node {:keys [name artist id image] :as album}]
   (l/at node
         (if (:error album)
           [(l/class= :media) (l/content (render-api-error album))]
-          [(l/element= :a) (l/attr :href (str "/album/" id))
-           (l/class= :album) (l/content name)
-           (l/element= :h4) (l/content artist)
-           (l/element= :img) (l/attr :src (:extralarge image))])))
+          (l/compose-pews
+            [(l/element= :a) (l/attr :href (str "/album/" id))]
+            [(l/class= :album) (l/content name)]
+            [(l/element= :h4) (l/content artist)]
+            [(l/element= :img) (l/attr :src (:extralarge image))]))))
 
 (let [none-html (static :none)]
   (defragment render-album-thumbs (template :album-thumb)
     [albums]
-    (l/element= :li) (if (seq albums)
-                       #(for [album albums]
-                          (album-thumb-node % album))
-                       (comp (l/attr :class "span12")
-                             (l/content none-html)))))
+    (if (seq albums)
+      [(l/element= :li) #(for [album albums]
+                           (album-thumb-node % album))]
+      [(l/element= :li) (l/attr :class "span12")
+                        (l/content none-html)])))
 
 (defn render-tracks-table [tracks]
   (for [track tracks]
@@ -39,15 +40,17 @@
   [{:keys [id name artist image tracks]}]
   (if-let [user (session/get :user)]
     (if (some #{id} (:library user))
-      [(l/id= :library-remove) (l/attr :href (str "/library/remove/" id))
-       (l/id= :library-add) (l/remove)]
-      [(l/id= :library-add) (l/attr :href (str "/library/add/" id))
-       (l/id= :library-remove) (l/remove)])
+      (l/compose-pews
+        [(l/id= :library-remove) (l/attr :href (str "/library/remove/" id))]
+        [(l/id= :library-add) (l/remove)])
+      (l/compose-pews
+        [(l/id= :library-add) (l/attr :href (str "/library/add/" id))]
+        [(l/id= :library-remove) (l/remove)]))
     [(l/class= :logged-in) (l/remove)])
-  (l/element= :h1) (l/content name)
-  (l/element= :h2) (l/content artist)
-  (l/element= :img) (l/attr :src (:extralarge image))
-  (l/element= :table) (l/content (render-tracks-table tracks)))
+  [(l/element= :h1) (l/content name)]
+  [(l/element= :h2) (l/content artist)]
+  [(l/element= :img) (l/attr :src (:extralarge image))]
+  [(l/element= :table) (l/content (render-tracks-table tracks))])
 
 (let [hero-html (static :hero-unit)
       heading (heading-search "Top Albums" "/albums/search")]
