@@ -19,7 +19,8 @@
             [(l/element= :a) (l/attr :href (str "/album/" id))]
             [(l/class= :album) (l/content name)]
             [(l/element= :h4) (l/content artist)]
-            [(l/element= :img) (l/attr :src (:extralarge image))]))))
+            [(l/element= :img) (l/attr :src (:extralarge image))]
+            [(l/class= :owners) (l/content (str (or (:owners album) 0)))]))))
 
 (let [none-html (static :none)]
   (defragment render-album-thumbs (template :album-thumb)
