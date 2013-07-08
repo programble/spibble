@@ -1,76 +1,72 @@
 (ns spibble.models.album
-  (:require [spibble.utilities :refer [lastfm count-pages image-from-lastfm]]
+  (:require [spibble.utilities :refer [count-pages]]
+            [spibble.cache :as cache]
+            [cljmb.core :as mb]
             [monger.collection :as mc]
             [monger.operators :refer [$all]]
-            [monger.query :as mq]))
+            [monger.query :as mq]
+            [clojure.string :refer [escape]]))
 
 (mc/ensure-index "albums" {:id 1})
+(mc/ensure-index "albums" {:mbid 1})
 
-(defn vector-fix [v] (if (sequential? v) v [v]))
+(def album-id
+  (atom (-> (mq/with-collection "albums"
+              (mq/find {})
+              (mq/sort {:id -1})
+              (mq/limit 1))
+            first :id (or 0))))
 
-(defn track-from-lastfm [track]
-  (-> track
-      (select-keys [:name :mbid :url])
-      (assoc :duration (Long/parseLong (:duration track))
-             :artist (-> track :artist :name))))
+(def mb-search (cache/memoize mb/search))
 
-(defn from-lastfm [album]
-  (-> album
-      (select-keys [:name :artist :mbid :url])
-      (assoc :id (Long/parseLong (:id album))
-             :image (image-from-lastfm (:image album))
-             :tracks (map track-from-lastfm (-> album :tracks :track vector-fix)))))
+(defn from-mb [release]
+  (dissoc (assoc release :mbid (:id release)) :id))
+
+(defn refresh-data [album]
+  (if (:refresh album)
+    (let [data (mb/lookup :release
+                          (:mbid album)
+                          [:artists :labels :recordings :release-groups :media])]
+      (if (:error data)
+        data
+        (mc/find-and-modify "albums"
+                            {:id (:id album)}
+                            (merge (dissoc album :refresh) (from-mb data))
+                            :return-new true)))
+    album))
 
 (defn count-albums []
   (mc/count "albums" {}))
 
-(defn get-local
-  "Get local album data."
-  [id]
-  (mc/find-one-as-map "albums" {:id id}))
+(defn get-album [id]
+  (refresh-data (mc/find-one-as-map "albums" {:id id})))
 
-(defn get-remote
-  "Populate local data map with remote data."
-  [{:keys [mbid name artist] :as local}]
-  (let [query (if-not (empty? mbid)
-                {:mbid mbid}
-                {:album name :artist artist})
-        resp (lastfm "album.getInfo" query)]
-    (if (:error resp)
-      resp
-      (merge (from-lastfm (:album resp)) local))))
+(defn get-album-by-mbid [mbid]
+  (refresh-data (mc/find-one-as-map "albums" {:mbid mbid})))
 
-(defn get-album
-  "Get local and remote data for an album."
-  [id]
-  (when-let [local (get-local id)]
-    (get-remote local)))
+(defn get-top-albums [page per]
+  (map refresh-data (mq/with-collection "albums"
+                      (mq/find {})
+                      (mq/sort {:owners -1})
+                      (mq/paginate :page page :per-page per))))
 
-(defn add-local
-  "Add local album data for a Last.fm album."
-  [remote]
-  (mc/insert "albums" (select-keys remote [:id :mbid :artist :name])))
+(defn vinyl-query [query]
+  (str \" (escape query {\" "\\\""}) "\" AND ("
+       "format:\"12\\\" Vinyl\" OR "
+       "format:\"10\\\" Vinyl\" OR "
+       "format:\"7\\\" Vinyl\" OR "
+       "format:Vinyl)"))
 
-(defn get-top-albums
-  [page per]
-  (map get-remote (mq/with-collection "albums"
-                    (mq/find {})
-                    (mq/sort {:owners -1})
-                    (mq/paginate :page page :per-page per))))
+(defn get-or-add [album]
+  (if-let [local (get-album-by-mbid (:mbid album))]
+    local
+    (mc/insert-and-return "albums" (assoc album :id (swap! album-id inc)
+                                                :refresh true))))
 
-(defn search
-  "Search Last.fm for albums."
-  [query page per]
-  (let [resp (lastfm "album.search" {:album query :limit per :page page})]
+(defn search [query page per]
+  (let [resp (mb-search :release (vinyl-query query) per page)]
     (if (:error resp)
       {:albums [resp], :pages 0}
-      (let [albums (map from-lastfm (-> resp :results :albummatches :album vector-fix))
-            pages (-> resp :results :opensearch:totalResults Long/parseLong (count-pages per))]
-        ;; Create local data for every search result
-        (doseq [album albums]
-          (when-not (get-local (:id album))
-            (add-local album)))
+      (let [pages (count-pages (:count resp) per)
+            albums (map (comp get-or-add from-mb) (:releases resp))]
         {:albums albums, :pages pages}))))
-
-(defn get-owners [album]
-  (mc/find-maps "users" {:library {$all [(:id album)]}}))
