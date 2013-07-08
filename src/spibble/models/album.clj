@@ -57,11 +57,11 @@
        "format:\"7\\\" Vinyl\" OR "
        "format:Vinyl)"))
 
-(defn get-or-add [album]
-  (if-let [local (get-album-by-mbid (:mbid album))]
+(defn get-or-add [release]
+  (if-let [local (get-album-by-mbid (:mbid release))]
     local
-    (mc/insert-and-return "albums" (assoc album :id (swap! album-id inc)
-                                                :refresh true))))
+    (let [album (assoc release :id (swap! album-id inc), :refresh true)]
+      (mc/insert-and-return "albums" album))))
 
 (defn search [query page per]
   (let [resp (mb-search :release (vinyl-query query) per page)]
