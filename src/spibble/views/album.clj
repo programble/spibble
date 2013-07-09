@@ -34,6 +34,7 @@
           [(l/class= :media) (l/content (render-api-error album))])
     (l/at node
           [(l/element= :a) (l/attr :href (str "/album/" (:id album)))]
+          [(l/element= :img) (l/attr :src (str (-> album :image :extralarge)))]
           [(l/class= :album-title) (l/content (:title album))]
           [(l/class= :album-artist) (l/content (format-artists album))]
           [(l/class= :album-label) (l/content (format-labels album))]
@@ -67,6 +68,7 @@
         [(l/id= :library-add) (l/attr :href (str "/library/add/" id))]
         [(l/id= :library-remove) (l/remove)]))
     [(l/class= :logged-in) (l/remove)])
+  [(l/element= :img) (l/attr :src (str (-> album :image :extralarge)))]
   [(l/id= :album-title) (l/content title)]
   [(l/id= :album-artist) (l/content (format-artists album))]
   [(l/id= :album-media) (l/content (format-media album))]
