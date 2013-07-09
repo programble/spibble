@@ -1,5 +1,6 @@
 (ns spibble.views.album
-  (:require [spibble.models.album :as album]
+  (:require [clojure.string :refer [join split]]
+            [spibble.models.album :as album]
             [spibble.views.common :refer [template static layout heading-search pager]]
             [spibble.utilities :refer [parse-pos-long count-pages]]
             [me.raynes.laser :as l :refer [defragment]]
@@ -7,20 +8,37 @@
             [noir.response :refer [redirect]]
             [compojure.core :refer [defroutes GET]]))
 
+(defn format-artists [album]
+  (join ", " (map #(-> % :artist :name) (:artist-credit album))))
+
+(defn format-labels [album]
+  (join ", " (map #(-> % :label :name) (:label-info album))))
+
+(def format-map
+  {"12\" Vinyl" "12″"
+   "10\" Vinyl" "10″"
+   "7\" Vinyl" "7″"})
+
+(defn format-media [album]
+  (let [media (frequencies (map (comp format-map :format) (:media album)))]
+    (join ", " (for [[m n] media]
+                 (if (= n 1) m (str n "×" m))))))
+
 (defragment render-api-error (template :api-error)
   [error]
-  [(l/class= :api-error) (l/content (:message error))])
+  [(l/class= :api-error) (l/content (:error error))])
 
-(defn album-thumb-node [node {:keys [name artist id image] :as album}]
-  (l/at node
-        (if (:error album)
-          [(l/class= :media) (l/content (render-api-error album))]
-          (l/compose-pews
-            [(l/element= :a) (l/attr :href (str "/album/" id))]
-            [(l/class= :album) (l/content name)]
-            [(l/element= :h4) (l/content artist)]
-            [(l/element= :img) (l/attr :src (:extralarge image))]
-            [(l/class= :owners) (l/content (str (or (:owners album) 0)))]))))
+(defn album-thumb-node [node album]
+  (if (:error album)
+    (l/at node
+          [(l/class= :media) (l/content (render-api-error album))])
+    (l/at node
+          [(l/element= :a) (l/attr :href (str "/album/" (:id album)))]
+          [(l/class= :album-title) (l/content (:title album))]
+          [(l/class= :album-artist) (l/content (format-artists album))]
+          [(l/class= :album-label) (l/content (format-labels album))]
+          [(l/class= :album-media) (l/content (format-media album))]
+          [(l/class= :owners) (l/content (str (or (:owners album) 0)))])))
 
 (let [none-html (static :none)]
   (defragment render-album-thumbs (template :album-thumb)
