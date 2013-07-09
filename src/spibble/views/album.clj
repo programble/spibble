@@ -121,4 +121,8 @@
         (search-page q p))))
 
   (GET "/album/:id" [id]
-    (album-page (parse-pos-long id))))
+    (album-page (parse-pos-long id)))
+
+  (GET "/album/mbid/:mbid" [mbid]
+    (when-let [album (album/get-album-by-mbid mbid)]
+      (redirect (str "/album/" (:id album))))))
