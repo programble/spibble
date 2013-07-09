@@ -1,5 +1,5 @@
 (ns spibble.models.album
-  (:require [spibble.utilities :refer [count-pages]]
+  (:require [spibble.utilities :refer [lastfm image-from-lastfm count-pages]]
             [spibble.cache :as cache]
             [cljmb.core :as mb]
             [monger.collection :as mc]
@@ -22,33 +22,40 @@
 (defn from-mb [release]
   (dissoc (assoc release :mbid (:id release)) :id))
 
-(defn refresh-data [album]
+(defn image-data [album]
+  (let [artist (-> album :artist-credit first :artist :name)
+        resp (lastfm "album.getInfo" {:artist artist, :album (:title album)})]
+    {:image (-> resp :album :image image-from-lastfm)}))
+
+(defn mb-data [album]
+  (let [data (mb/lookup :release (:mbid album) [:artists
+                                                :labels
+                                                :media
+                                                :recordings
+                                                :release-groups])]
+    (from-mb data)))
+
+(defn refresh-album [album]
   (if (:refresh album)
-    (let [data (mb/lookup :release
-                          (:mbid album)
-                          [:artists :labels :recordings :release-groups :media])]
-      (if (:error data)
-        data
-        (mc/find-and-modify "albums"
-                            {:id (:id album)}
-                            (merge (dissoc album :refresh) (from-mb data))
-                            :return-new true)))
+    (let [refresh (merge album (mb-data album) (image-data album))]
+      (mc/update "albums" {:id (:id album)} refresh)
+      refresh)
     album))
 
 (defn count-albums []
   (mc/count "albums" {}))
 
 (defn get-album [id]
-  (refresh-data (mc/find-one-as-map "albums" {:id id})))
+  (refresh-album (mc/find-one-as-map "albums" {:id id})))
 
 (defn get-album-by-mbid [mbid]
-  (refresh-data (mc/find-one-as-map "albums" {:mbid mbid})))
+  (refresh-album (mc/find-one-as-map "albums" {:mbid mbid})))
 
 (defn get-top-albums [page per]
-  (map refresh-data (mq/with-collection "albums"
-                      (mq/find {})
-                      (mq/sort {:owners -1})
-                      (mq/paginate :page page :per-page per))))
+  (map refresh-album (mq/with-collection "albums"
+                       (mq/find {})
+                       (mq/sort {:owners -1})
+                       (mq/paginate :page page :per-page per))))
 
 (defn vinyl-query [query]
   (str \" (escape query {\" "\\\""}) "\" AND ("
@@ -67,5 +74,9 @@
     (if (:error resp)
       {:albums [resp], :pages 0}
       (let [pages (count-pages (:count resp) per)
-            albums (map (comp get-or-add from-mb) (:releases resp))]
+            albums (for [release (:releases resp)]
+                     (let [album (get-or-add (from-mb release))]
+                       (if (:image album)
+                         album
+                         (merge album (image-data album)))))]
         {:albums albums, :pages pages}))))
