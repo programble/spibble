@@ -49,14 +49,15 @@
       [(l/element= :li) (comp (l/attr :class "span12")
                               (l/content none-html))])))
 
-(defn render-tracks-table [tracks]
-  (for [track tracks]
-    (l/node :tr :content [(l/node :td :content (:name track))
+(defn render-tracks-table [album]
+  (for [track (apply concat (map :tracks (:media album)))]
+    (l/node :tr :content [(l/node :td :content (:number track))
+                          (l/node :td :content (:title track))
                           ;; TODO: Format duration
-                          (l/node :td :content (str (:duration track)))])))
+                          (l/node :td :content (str (:length track)))])))
 
 (defragment render-album (template :album)
-  [{:keys [id name artist image tracks]}]
+  [{:keys [id title] :as album}]
   (if-let [user (session/get :user)]
     (if (some #{id} (:library user))
       (l/compose-pews
@@ -66,10 +67,11 @@
         [(l/id= :library-add) (l/attr :href (str "/library/add/" id))]
         [(l/id= :library-remove) (l/remove)]))
     [(l/class= :logged-in) (l/remove)])
-  [(l/element= :h1) (l/content name)]
-  [(l/element= :h2) (l/content artist)]
-  [(l/element= :img) (l/attr :src (:extralarge image))]
-  [(l/element= :table) (l/content (render-tracks-table tracks))])
+  [(l/id= :album-title) (l/content title)]
+  [(l/id= :album-artist) (l/content (format-artists album))]
+  [(l/id= :album-media) (l/content (format-media album))]
+  [(l/id= :album-label) (l/content (format-labels album))]
+  [(l/element= :table) (l/content (render-tracks-table album))])
 
 (let [hero-html (static :hero-unit)
       heading (heading-search "Top Albums" "/albums/search")]
