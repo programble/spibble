@@ -104,7 +104,7 @@
       (layout (render-api-error album) :active :albums)
       (layout
         (render-album album)
-        :title (:name album)
+        :title (:title album)
         :active :albums))))
 
 (defroutes album-routes
