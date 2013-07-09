@@ -54,8 +54,7 @@
   (str \" (escape query {\" "\\\""}) "\" AND ("
        "format:\"12\\\" Vinyl\" OR "
        "format:\"10\\\" Vinyl\" OR "
-       "format:\"7\\\" Vinyl\" OR "
-       "format:Vinyl)"))
+       "format:\"7\\\" Vinyl\""))
 
 (defn get-or-add [release]
   (if-let [local (get-album-by-mbid (:mbid release))]
