@@ -1,5 +1,5 @@
 (ns spibble.views.album
-  (:require [clojure.string :refer [join split]]
+  (:require [clojure.string :refer [join]]
             [spibble.models.album :as album]
             [spibble.views.common :refer [template static layout heading-search pager]]
             [spibble.utilities :refer [parse-pos-long count-pages]]
