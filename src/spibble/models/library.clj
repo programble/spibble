@@ -26,7 +26,7 @@
   (count (:library user)))
 
 (defn get-library [user page per]
-  (map album/get-remote (mq/with-collection "albums"
-                          (mq/find {:id {$in (vec (:library user))}})
-                          (mq/sort {(str "activity." (:name user)) -1})
-                          (mq/paginate :page page :per-page per))))
+  (map album/refresh-data (mq/with-collection "albums"
+                            (mq/find {:id {$in (vec (:library user))}})
+                            (mq/sort {(str "activity." (:name user)) -1})
+                            (mq/paginate :page page :per-page per))))
