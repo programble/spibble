@@ -63,10 +63,16 @@
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
     <script>
       $(function() {
-        $('.thumbnail').mouseenter(function(e) {
+        $('.thumbnail').mouseenter(function() {
           $(this).find('.fade').addClass('in');
-        }).mouseleave(function(e) {
+        }).mouseleave(function() {
           $(this).find('.fade').removeClass('in');
+        });
+
+        $('.search-query').focus(function() {
+          $(this).one('mouseup', function() {
+            return false;
+          }).select();
         });
       });
     </script>
