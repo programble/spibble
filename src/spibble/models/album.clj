@@ -37,7 +37,9 @@
 
 (defn refresh-album [album]
   (if (:refresh album)
-    (let [refresh (merge album (mb-data album) (image-data album))]
+    (let [refresh (merge (dissoc album :refresh)
+                         (mb-data album)
+                         (image-data album))]
       (mc/update "albums" {:id (:id album)} refresh)
       refresh)
     album))
