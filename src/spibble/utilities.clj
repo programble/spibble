@@ -25,3 +25,6 @@
 (defn image-from-lastfm [image]
   "Process image elements from Last.fm for sanity."
   (into {} (map #(vector (keyword (:size %)) (:text %)) image)))
+
+(defn pluralize [n s]
+  (str n " " s (when-not (= n 1) "s")))

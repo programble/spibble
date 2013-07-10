@@ -2,7 +2,7 @@
   (:require [clojure.string :refer [join]]
             [spibble.models.album :as album]
             [spibble.views.common :refer [template static layout heading-search pager]]
-            [spibble.utilities :refer [parse-pos-long count-pages]]
+            [spibble.utilities :refer [parse-pos-long count-pages pluralize]]
             [me.raynes.laser :as l :refer [defragment]]
             [noir.session :as session]
             [noir.response :refer [redirect]]
@@ -39,7 +39,7 @@
           [(l/class= :album-artist) (l/content (format-artists album))]
           [(l/class= :album-label) (l/content (format-labels album))]
           [(l/class= :album-media) (l/content (format-media album))]
-          [(l/class= :owners) (l/content (str (or (:owners album) 0)))])))
+          [(l/class= :owners) (l/content (pluralize (get album :owners 0) "owner"))])))
 
 (let [none-html (static :none)]
   (defragment render-album-thumbs (template :album-thumb)
