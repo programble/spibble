@@ -10,7 +10,7 @@
 (defroutes login-routes
   (GET "/login" {:keys [headers]}
     (when-not (session/get :user)
-      (let [from (.getPath (java.net.URL. (get headers "referer")))]
+      (let [from (.getFile (java.net.URL. (get headers "referer")))]
         (when-not (= from "/")
           (session/flash-put! :from from))
         (redirect auth-url))))
@@ -26,5 +26,5 @@
 
   (GET "/logout" {:keys [headers]}
     (session/remove! :user)
-    (let [from (.getPath (java.net.URL. (get headers "referer")))]
+    (let [from (.getFile (java.net.URL. (get headers "referer")))]
       (redirect from))))
