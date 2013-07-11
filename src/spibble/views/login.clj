@@ -8,17 +8,23 @@
 (def auth-url (str "http://www.last.fm/api/auth/?api_key=" api-key))
 
 (defroutes login-routes
-  (GET "/login" []
+  (GET "/login" {:keys [headers]}
     (when-not (session/get :user)
-      (redirect auth-url)))
+      (let [from (.getPath (java.net.URL. (get headers "referer")))]
+        (when-not (= from "/")
+          (session/flash-put! :from from))
+        (redirect auth-url))))
 
   (GET "/login/callback" [token]
     (when-let [user (and token (user/login token))]
       (session/put! :user user)
-      (if (seq (:library user))
-        (redirect (str "/library/" (:name user)))
-        (redirect "/"))))
+      (if-let [from (session/flash-get :from)]
+        (redirect from)
+        (if (seq (:library user))
+          (redirect (str "/library/" (:name user)))
+          (redirect "/")))))
 
-  (GET "/logout" []
+  (GET "/logout" {:keys [headers]}
     (session/remove! :user)
-    (redirect "/")))
+    (let [from (.getPath (java.net.URL. (get headers "referer")))]
+      (redirect from))))
