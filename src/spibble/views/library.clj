@@ -16,10 +16,13 @@
 (defn library-page [name page]
   (when-let [user (user/get-local name)]
     (let [library (library/get-library user page 6)
-          pages (count-pages (library/count-library user) 6)
-          title (str name "'s Library")]
+          count (library/count-library user)
+          pages (count-pages count 6)
+          title (str name "'s Library")
+          count-node (l/node :small :content (str "(" count ")"))]
       (layout
-        (concat (heading-search title (str "/library/" name "/search"))
+        (concat (heading-search [title " " count-node]
+                                (str "/library/" name "/search"))
                 [(l/node :ul :attrs {:class "thumbnails"}
                          :content (render-album-thumbs library))]
                 (pager (str "/library/" name "?") page pages))
