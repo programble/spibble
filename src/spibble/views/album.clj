@@ -73,7 +73,8 @@
   [(l/id= :album-artist) (l/content (format-artists album))]
   [(l/id= :album-media) (l/content (format-media album))]
   [(l/id= :album-label) (l/content (format-labels album))]
-  [(l/element= :table) (l/content (render-tracks-table album))])
+  [(l/element= :table) (l/content (render-tracks-table album))]
+  [(l/id= :musicbrainz) (l/attr :href (str "http://musicbrainz.org/release/" (:mbid album)))])
 
 (let [hero-html (static :hero-unit)
       heading (heading-search "Top Albums" "/albums/search")]
