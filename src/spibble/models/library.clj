@@ -6,21 +6,23 @@
             [monger.operators :refer [$addToSet $pull $in $inc $set]]))
 
 (defn add-album [user album]
-  (mc/update "albums"
-             {:id (:id album)}
-             {$inc {:owners 1}
-              $set {(str "activity." (:name user)) (java.util.Date.)}})
-  (mc/find-and-modify "users"
-                      {:name (:name user)}
-                      {$addToSet {:library (:id album)}}
-                      :return-new true))
+  (when (not-any? #{(:id album)} (:library user))
+    (mc/update "albums"
+               {:id (:id album)}
+               {$inc {:owners 1}
+                $set {(str "activity." (:name user)) (java.util.Date.)}})
+    (mc/find-and-modify "users"
+                        {:name (:name user)}
+                        {$addToSet {:library (:id album)}}
+                        :return-new true)))
 
 (defn remove-album [user album]
-  (mc/update "albums" {:id (:id album)} {$inc {:owners -1}})
-  (mc/find-and-modify "users"
-                      {:name (:name user)}
-                      {$pull {:library (:id album)}}
-                      :return-new true))
+  (when (some #{(:id album)} (:library user))
+    (mc/update "albums" {:id (:id album)} {$inc {:owners -1}})
+    (mc/find-and-modify "users"
+                        {:name (:name user)}
+                        {$pull {:library (:id album)}}
+                        :return-new true)))
 
 (defn count-library [user]
   (count (:library user)))
