@@ -9,6 +9,9 @@
 (defn static [file]
   (-> file template slurp l/unescaped))
 
+(defn ajax? [req]
+  (= (get-in req [:headers "x-requested-with"]) "XMLHttpRequest"))
+
 (let [html (l/parse (template :layout))]
   (defn layout [content & {:keys [title active]}]
     (l/document

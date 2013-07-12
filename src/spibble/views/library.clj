@@ -2,8 +2,8 @@
   (:require [spibble.models.library :as library]
             [spibble.models.user :as user]
             [spibble.models.album :as album]
-            [spibble.views.common :refer [template layout heading-search pager]]
-            [spibble.views.album :refer [render-album-thumbs]]
+            [spibble.views.common :refer [template ajax? layout heading-search pager]]
+            [spibble.views.album :refer [render-album-thumbs render-library-buttons]]
             [spibble.utilities :refer [parse-pos-long count-pages]]
             [me.raynes.laser :as l :refer [defragment]]
             [noir.session :as session]
@@ -29,17 +29,21 @@
         :title title
         :active (when (self? user) :library)))))
 
-(defn add-page [id]
+(defn add-page [req id]
   (when-let [album (album/get-album id)]
     (let [updated (library/add-album (session/get :user) album)]
       (session/update-in! [:user] #(merge % updated))
-      (redirect "/library"))))
+      (if (ajax? req)
+        (l/fragment-to-html (render-library-buttons album))
+        (redirect "/library")))))
 
-(defn remove-page [id]
+(defn remove-page [req id]
   (when-let [album (album/get-album id)]
     (let [updated (library/remove-album (session/get :user) album)]
       (session/update-in! [:user] #(merge % updated))
-      (redirect "/library"))))
+      (if (ajax? req)
+        (l/fragment-to-html (render-library-buttons album))
+        (redirect "/library")))))
 
 (defroutes library-routes
   (GET "/library" []
@@ -50,10 +54,10 @@
     (when-let [p (if p (parse-pos-long p) 1)]
       (library-page user p)))
 
-  (GET "/library/add/:id" [id]
+  (GET "/library/add/:id" [id :as req]
     (when (session/get :user)
-      (add-page (parse-pos-long id))))
+      (add-page req (parse-pos-long id))))
 
-  (GET "/library/remove/:id" [id]
+  (GET "/library/remove/:id" [id :as req]
     (when (session/get :user)
-      (remove-page (parse-pos-long id)))))
+      (remove-page req (parse-pos-long id)))))

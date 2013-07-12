@@ -28,6 +28,17 @@
   [error]
   [(l/class= :api-error) (l/content (:error error))])
 
+(defragment render-library-buttons (template :library-buttons)
+  [{:keys [id]}]
+  (let [user (session/get :user)]
+    (if (some #{id} (:library user))
+      (l/compose-pews
+        [(l/class= :library-remove) (l/attr :href (str "/library/remove/" id))]
+        [(l/class= :library-add) (l/remove)])
+      (l/compose-pews
+        [(l/class= :library-add) (l/attr :href (str "/library/add/" id))]
+        [(l/class= :library-remove) (l/remove)]))))
+
 (defn album-thumb-node [node album]
   (if (:error album)
     (l/at node
@@ -60,13 +71,7 @@
 (defragment render-album (template :album)
   [{:keys [id title] :as album}]
   (if-let [user (session/get :user)]
-    (if (some #{id} (:library user))
-      (l/compose-pews
-        [(l/id= :library-remove) (l/attr :href (str "/library/remove/" id))]
-        [(l/id= :library-add) (l/remove)])
-      (l/compose-pews
-        [(l/id= :library-add) (l/attr :href (str "/library/add/" id))]
-        [(l/id= :library-remove) (l/remove)]))
+    [(l/id= :library-buttons) (l/content (render-library-buttons album))]
     [(l/class= :logged-in) (l/remove)])
   [(l/element= :img) (l/attr :src (str (-> album :image :extralarge)))]
   [(l/id= :album-title) (l/content title)]
