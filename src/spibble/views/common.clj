@@ -25,7 +25,7 @@
       (when active
         [(l/id= active) (l/add-class "active")])
 
-      [(l/id= :contents) (l/content content)])))
+      [(l/id= :content) (l/content content)])))
 
 (defragment heading-search (template :heading-search)
   [heading url & [query]]
