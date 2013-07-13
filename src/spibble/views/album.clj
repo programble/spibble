@@ -58,7 +58,7 @@
     (if (seq albums)
       [(l/element= :li) #(for [album albums]
                            (album-thumb-node % album))]
-      [(l/element= :li) (comp (l/attr :class "span12")
+      [(l/element= :li) (comp (l/classes "span12")
                               (l/content none-html))])))
 
 (defn render-tracks-table [album]
