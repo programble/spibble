@@ -78,6 +78,7 @@
 
         function albumButton() {
           var parent = $(this).parent();
+          if ($(this).hasClass('btn-mini')) this.href += '?s';
           $.get(this.href, function(data) {
             var html = $(data);
             html.click(albumButton);
