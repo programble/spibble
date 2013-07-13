@@ -35,16 +35,16 @@
       (if (some #{id} (:library user))
         (l/compose-pews
           [(l/class= :library-remove) (l/attr :href (str "/library/remove/" id))]
-          [(l/class= :library-add) (l/remove)])
+          [(l/class= :library-add)    (l/remove)])
         (l/compose-pews
-          [(l/class= :library-add) (l/attr :href (str "/library/add/" id))]
+          [(l/class= :library-add)    (l/attr :href (str "/library/add/" id))]
           [(l/class= :library-remove) (l/remove)]))
       (when small
         (l/compose-pews
           [(l/element= :span) (l/remove)]
-          [(l/element= :a) (comp (l/remove-class "btn-block")
-                                 (l/remove-class "btn-left")
-                                 (l/add-class "btn-mini"))])))
+          [(l/element= :a)    (comp (l/remove-class "btn-block")
+                                    (l/remove-class "btn-left")
+                                    (l/add-class "btn-mini"))])))
     [(l/element= :a) (l/remove)]))
 
 (defn album-thumb-node [node album]
@@ -52,14 +52,14 @@
     (l/at node
           [(l/class= :media) (l/content (render-api-error album))])
     (l/at node
-          [(l/element= :a) (l/attr :href (str "/album/" (:id album)))]
-          [(l/element= :img) (l/attr :src (str (-> album :image :extralarge)))]
-          [(l/class= :album-title) (l/content (:title album))]
+          [(l/element= :a)          (l/attr :href (str "/album/" (:id album)))]
+          [(l/element= :img)        (l/attr :src (str (-> album :image :extralarge)))]
+          [(l/class= :album-title)  (l/content (:title album))]
           [(l/class= :album-artist) (l/content (format-artists album))]
-          [(l/class= :album-label) (l/content (format-labels album))]
-          [(l/class= :album-media) (l/content (format-media album))]
-          [(l/class= :owners) (l/content (pluralize (get album :owners 0) "owner"))]
-          [(l/class= :buttons) (l/content (render-album-buttons album :small))])))
+          [(l/class= :album-label)  (l/content (format-labels album))]
+          [(l/class= :album-media)  (l/content (format-media album))]
+          [(l/class= :owners)       (l/content (pluralize (get album :owners 0) "owner"))]
+          [(l/class= :buttons)      (l/content (render-album-buttons album :small))])))
 
 (let [none-html (static :none)]
   (defragment render-album-thumbs (template :album-thumb)
@@ -79,14 +79,14 @@
 
 (defragment render-album (template :album)
   [{:keys [id title] :as album}]
-  [(l/id= :buttons) (l/content (render-album-buttons album))]
-  [(l/element= :img) (l/attr :src (str (-> album :image :extralarge)))]
-  [(l/id= :album-title) (l/content title)]
+  [(l/id= :buttons)      (l/content (render-album-buttons album))]
+  [(l/element= :img)     (l/attr :src (str (-> album :image :extralarge)))]
+  [(l/id= :album-title)  (l/content title)]
   [(l/id= :album-artist) (l/content (format-artists album))]
-  [(l/id= :album-media) (l/content (format-media album))]
-  [(l/id= :album-label) (l/content (format-labels album))]
-  [(l/element= :table) (l/content (render-tracks-table album))]
-  [(l/id= :musicbrainz) (l/attr :href (str "http://musicbrainz.org/release/" (:mbid album)))])
+  [(l/id= :album-media)  (l/content (format-media album))]
+  [(l/id= :album-label)  (l/content (format-labels album))]
+  [(l/element= :table)   (l/content (render-tracks-table album))]
+  [(l/id= :musicbrainz)  (l/attr :href (str "http://musicbrainz.org/release/" (:mbid album)))])
 
 (let [hero-html (static :hero-unit)
       heading (heading-search "Top Albums" "/albums/search")]
@@ -94,8 +94,7 @@
     (let [albums (album/get-top-albums page 6)
           pages (count-pages (album/count-albums) 6)]
       (layout
-        (concat (when-not (session/get :user)
-                  [hero-html])
+        (concat (when-not (session/get :user) [hero-html])
                 heading
                 [(l/node :ul :attrs {:class "thumbnails"}
                          :content (render-album-thumbs albums))]
