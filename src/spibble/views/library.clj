@@ -36,7 +36,7 @@
       (if (ajax? req)
         (l/fragment-to-html
           (if (:query-string req)
-            (render-album-thumbs [album])
+            (render-album-thumbs [(album/get-album id)])
             (render-album-buttons album)))
         (redirect "/library")))))
 
@@ -47,7 +47,7 @@
       (if (ajax? req)
         (l/fragment-to-html
           (if (:query-string req)
-            (render-album-thumbs [album])
+            (render-album-thumbs [(album/get-album id)])
             (render-album-buttons album)))
         (redirect "/library")))))
 
