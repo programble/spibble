@@ -3,7 +3,7 @@
             [spibble.models.user :as user]
             [spibble.models.album :as album]
             [spibble.views.common :refer [template ajax? layout heading-search pager]]
-            [spibble.views.album :refer [render-album-thumbs render-library-buttons]]
+            [spibble.views.album :refer [render-album-thumbs render-album-buttons]]
             [spibble.utilities :refer [parse-pos-long count-pages]]
             [me.raynes.laser :as l :refer [defragment]]
             [noir.session :as session]
@@ -34,7 +34,7 @@
     (let [updated (library/add-album (session/get :user) album)]
       (session/update-in! [:user] #(merge % updated))
       (if (ajax? req)
-        (l/fragment-to-html (render-library-buttons album))
+        (l/fragment-to-html (render-album-buttons album))
         (redirect "/library")))))
 
 (defn remove-page [req id]
@@ -42,7 +42,7 @@
     (let [updated (library/remove-album (session/get :user) album)]
       (session/update-in! [:user] #(merge % updated))
       (if (ajax? req)
-        (l/fragment-to-html (render-library-buttons album))
+        (l/fragment-to-html (render-album-buttons album))
         (redirect "/library")))))
 
 (defroutes library-routes

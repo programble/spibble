@@ -11,7 +11,8 @@
     <style>
       #content { margin-top: 10px; }
       .form-search { margin: 15px; }
-      .cover-art { height: 260px; }
+      .thumbnail { height: 260px; position: relative; }
+      .buttons { position: absolute; bottom: 4px; right: 4px; }
       .cover-art img { width: 260px; }
       .btn-left { text-align: left; padding-left: 10px; }
     </style>
@@ -75,16 +76,16 @@
           }).select();
         });
 
-        function libraryButton() {
+        function albumButton() {
           var parent = $(this).parent();
           $.get(this.href, function(data) {
             var html = $(data);
-            html.click(libraryButton);
+            html.click(albumButton);
             parent.html(html);
           });
           return false;
         }
-        $('.library-add,.library-remove').click(libraryButton);
+        $('.album-button').click(albumButton);
       });
     </script>
     <script>$(function(){var k=[],o='38,38,40,40,37,39,37,39,66,65,13';$(document).keydown(function(e){k.push(e.keyCode);if(k.toString().indexOf(o)>=0){$('a').toggleClass('icon-spin');k=[]}})})</script>
