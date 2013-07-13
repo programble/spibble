@@ -62,33 +62,6 @@
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-    <script>
-      $(function() {
-        $('.thumbnail').mouseenter(function() {
-          $(this).find('.fade').addClass('in');
-        }).mouseleave(function() {
-          $(this).find('.fade').removeClass('in');
-        });
-
-        $('.search-query').focus(function() {
-          $(this).one('mouseup', function() {
-            return false;
-          }).select();
-        });
-
-        function albumButton() {
-          var parent = $(this).parent();
-          if ($(this).hasClass('btn-mini')) this.href += '?s';
-          $.get(this.href, function(data) {
-            var html = $(data);
-            html.click(albumButton);
-            parent.html(html);
-          });
-          return false;
-        }
-        $('.album-button').click(albumButton);
-      });
-    </script>
-    <script>$(function(){var k=[],o='38,38,40,40,37,39,37,39,66,65,13';$(document).keydown(function(e){k.push(e.keyCode);if(k.toString().indexOf(o)>=0){$('a').toggleClass('icon-spin');k=[]}})})</script>
+    <script src="/js/spibble.js"></script>
   </body>
 </html>

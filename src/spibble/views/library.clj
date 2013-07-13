@@ -35,7 +35,9 @@
       (session/update-in! [:user] #(merge % updated))
       (if (ajax? req)
         (l/fragment-to-html
-          (render-album-buttons album (:query-string req)))
+          (if (:query-string req)
+            (render-album-thumbs [album])
+            (render-album-buttons album)))
         (redirect "/library")))))
 
 (defn remove-page [req id]
@@ -44,7 +46,9 @@
       (session/update-in! [:user] #(merge % updated))
       (if (ajax? req)
         (l/fragment-to-html
-          (render-album-buttons album (:query-string req)))
+          (if (:query-string req)
+            (render-album-thumbs [album])
+            (render-album-buttons album)))
         (redirect "/library")))))
 
 (defroutes library-routes
