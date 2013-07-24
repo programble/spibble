@@ -2,7 +2,7 @@
   (:require [clojure.string :refer [join]]
             [spibble.models.album :as album]
             [spibble.views.common :refer [template static layout heading-search pager]]
-            [spibble.utilities :refer [parse-pos-long count-pages pluralize]]
+            [spibble.utilities :refer [parse-pos-long count-pages pluralize format-ms]]
             [me.raynes.laser :as l :refer [defragment]]
             [noir.session :as session]
             [noir.response :refer [redirect]]
@@ -74,8 +74,9 @@
   (for [track (apply concat (map :tracks (:media album)))]
     (l/node :tr :content [(l/node :td :content (:number track))
                           (l/node :td :content (:title track))
-                          ;; TODO: Format duration
-                          (l/node :td :content (str (:length track)))])))
+                          (l/node :td :content (if-let [l (:length track)]
+                                                 (format-ms l)
+                                                 "?:??"))])))
 
 (defragment render-album (template :album)
   [{:keys [id title] :as album}]

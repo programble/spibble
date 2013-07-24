@@ -28,3 +28,12 @@
 
 (defn pluralize [n s]
   (str n " " s (when-not (= n 1) "s")))
+
+(defn format-ms [ms]
+  (let [quotrem (juxt quot rem)
+        secs (quot ms 1000)
+        [mins rsecs] (quotrem secs 60)
+        [hours rmins] (quotrem mins 60)]
+    (if (pos? hours)
+      (format "%d:%02d:%02d" hours rmins rsecs)
+      (format "%d:%02d" mins rsecs))))
