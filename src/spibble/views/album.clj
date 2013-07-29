@@ -71,12 +71,22 @@
                               (l/content none-html))])))
 
 (defn render-tracks-table [album]
-  (for [track (apply concat (map :tracks (:media album)))]
-    (l/node :tr :content [(l/node :td :content (:number track))
-                          (l/node :td :content (:title track))
-                          (l/node :td :content (if-let [l (:length track)]
-                                                 (format-ms l)
-                                                 "?:??"))])))
+  (flatten
+    (for [medium (:media album)]
+      [(l/node :tr
+               :content [(l/node :th :attrs {:colspan "3"}
+                                 :content (str (:title medium)
+                                               (when (:title medium) " — ")
+                                               (get format-map (:format medium))))])
+       (for [track (:tracks medium)]
+         (l/node :tr
+                 :content [(l/node :td :attrs {:class "span1"}
+                                   :content (:number track))
+                           (l/node :td :content (:title track))
+                           (l/node :td :attrs {:class "span2 text-right"}
+                                   :content (if-let [l (:length track)]
+                                              (format-ms l)
+                                              "?:??"))]))])))
 
 (defragment render-album (template :album)
   [{:keys [id title] :as album}]
