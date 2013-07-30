@@ -33,7 +33,7 @@ function thumbButton(e) {
 
 $(function() {
   // Select-all when search box is selected
-  $('.search-query').focus(function() {
+  $('input[type=search]').focus(function() {
     $(this).one('mouseup', function() {
       return false; // Prevent mouseup from deselecting
     }).select();
