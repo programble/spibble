@@ -3,7 +3,7 @@
             [spibble.models.user :as user]
             [spibble.models.album :as album]
             [spibble.views.common :refer [template ajax? layout heading-search pager]]
-            [spibble.views.album :refer [render-album-thumbs render-album-buttons]]
+            [spibble.views.album :refer [render-album-thumbs render-album-thumb render-album-buttons]]
             [spibble.utilities :refer [parse-pos-long count-pages]]
             [me.raynes.laser :as l :refer [defragment]]
             [noir.session :as session]
@@ -23,8 +23,7 @@
       (layout
         (concat (heading-search [title " " count-node]
                                 (str "/library/" name "/search"))
-                [(l/node :ul :attrs {:class "thumbnails"}
-                         :content (render-album-thumbs library))]
+                (render-album-thumbs library)
                 (pager (str "/library/" name "?") page pages))
         :title title
         :active (when (self? user) :library)))))
@@ -36,7 +35,7 @@
       (if (ajax? req)
         (l/fragment-to-html
           (if (:query-string req)
-            (render-album-thumbs [(album/get-album id)])
+            (render-album-thumb (album/get-album id))
             (render-album-buttons album)))
         (redirect "/library")))))
 
@@ -47,7 +46,7 @@
       (if (ajax? req)
         (l/fragment-to-html
           (if (:query-string req)
-            (render-album-thumbs [(album/get-album id)])
+            (render-album-thumb (album/get-album id))
             (render-album-buttons album)))
         (redirect "/library")))))
 

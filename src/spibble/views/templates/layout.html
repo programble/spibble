@@ -5,54 +5,51 @@
 
     <title></title>
 
-    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/css/bootstrap.min.css">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
-      #content { margin-top: 10px; }
-      .form-search { margin: 15px; }
-      .thumbnail { height: 260px; position: relative; }
+      #search { margin: 25px 0 15px; }
+      .thumbnail { height: 270px; margin-bottom: 15px; position: relative; }
       .buttons { position: absolute; bottom: 4px; right: 4px; }
       .cover-art img { width: 260px; }
+      .cover-art img.img-thumbnail { width: 270px; }
       .btn-left { text-align: left; padding-left: 10px; }
       .table td.text-right { text-align: right; }
     </style>
   </head>
   <body>
     <div class="navbar navbar-static-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="brand" href="/">Spibble</a>
+      <div class="container">
+        <a class="navbar-brand" href="/">Spibble</a>
 
-          <ul class="nav">
-            <li id="albums"><a href="/albums">Albums</a></li>
-            <li id="about"><a href="/about">About</a></li>
-          </ul>
+        <ul class="nav navbar-nav">
+          <li id="albums"><a href="/albums">Albums</a></li>
+          <li id="about"><a href="/about">About</a></li>
+        </ul>
 
-          <ul class="nav pull-right logged-out">
-            <li><a href="/login">
-              <i class="icon-signin"></i> Log in
-            </a></li>
-          </ul>
+        <a class="logged-out pull-right btn btn-primary navbar-btn" href="/login">
+          <i class="icon-signin"></i> Log in with Last.fm
+        </a>
 
-          <ul class="nav pull-right logged-in">
-            <li id="library"><a id="user" class="library"></a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <i class="icon-caret-down"></i>
-              </a>
-              <ul class="dropdown-menu pull-right" role="menu">
-                <li><a class="library">
-                  <i class="icon-fixed-width icon-music"></i> Library
-                </a></li>
-                <li class="divider"></li>
-                <li><a href="/logout">
-                  <i class="icon-fixed-width icon-signout"></i> Log out
-                </a></li>
-              </ul>
-            </li>
-          </ul>
-        </div>
+        <ul class="logged-in pull-right nav navbar-nav">
+          <li id="library"><a id="user" class="library"></a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="icon-caret-down"></i>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="library">
+                <i class="icon-fixed-width icon-music"></i> Library
+              </a></li>
+              <li class="divider"></li>
+              <li><a href="/logout">
+                <i class="icon-fixed-width icon-signout"></i> Log out
+              </a></li>
+            </ul>
+          </li>
+        </ul>
       </div>
     </div>
 
@@ -62,7 +59,7 @@
     </div>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
     <script src="/js/spibble.js"></script>
   </body>
 </html>
