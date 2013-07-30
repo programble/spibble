@@ -44,7 +44,7 @@
           [(l/element= :span) (l/remove)]
           [(l/element= :a)    (comp (l/remove-class "btn-block")
                                     (l/remove-class "btn-left")
-                                    (l/add-class "btn-mini"))])))
+                                    (l/add-class "btn-small"))])))
     [(l/element= :a) (l/remove)]))
 
 (defragment render-album-thumb (template :album-thumb)
