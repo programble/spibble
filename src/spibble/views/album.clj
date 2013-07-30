@@ -79,10 +79,10 @@
                                                (get format-map (:format medium))))])
        (for [track (:tracks medium)]
          (l/node :tr
-                 :content [(l/node :td :attrs {:class "span1"}
+                 :content [(l/node :td :attrs {:class "col-lg-1"}
                                    :content (:number track))
                            (l/node :td :content (:title track))
-                           (l/node :td :attrs {:class "span2 text-right"}
+                           (l/node :td :attrs {:class "col-lg-2 text-right"}
                                    :content (if-let [l (:length track)]
                                               (format-ms l)
                                               "?:??"))]))])))
