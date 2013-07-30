@@ -99,14 +99,12 @@
   [(l/element= :table)   (l/content (render-tracks-table album))]
   [(l/id= :musicbrainz)  (l/attr :href (str "http://musicbrainz.org/release/" (:mbid album)))])
 
-(let [hero-html (static :hero-unit)
-      heading (heading-search "Top Albums" "/albums/search")]
+(let [heading (heading-search "Top Albums" "/albums/search")]
   (defn top-albums-page [page]
     (let [albums (album/get-top-albums page 6)
           pages (count-pages (album/count-albums) 6)]
       (layout
-        (concat (when-not (session/get :user) [hero-html])
-                heading
+        (concat heading
                 [(l/node :ul :attrs {:class "thumbnails"}
                          :content (render-album-thumbs albums))]
                 (pager "/albums?" page pages))
