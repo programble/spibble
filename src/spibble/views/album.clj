@@ -47,28 +47,27 @@
                                     (l/add-class "btn-mini"))])))
     [(l/element= :a) (l/remove)]))
 
-(defn album-thumb-node [node album]
+(defragment render-album-thumb (template :album-thumb)
+  [album]
   (if (:error album)
-    (l/at node
-          [(l/class= :media) (l/content (render-api-error album))])
-    (l/at node
-          [(l/element= :a)          (l/attr :href (str "/album/" (:id album)))]
-          [(l/element= :img)        (l/attr :src (str (-> album :image :extralarge)))]
-          [(l/class= :album-title)  (l/content (:title album))]
-          [(l/class= :album-artist) (l/content (format-artists album))]
-          [(l/class= :album-label)  (l/content (format-labels album))]
-          [(l/class= :album-media)  (l/content (format-media album))]
-          [(l/class= :owners)       (l/content (pluralize (get album :owners 0) "owner"))]
-          [(l/class= :buttons)      (l/content (render-album-buttons album :small))])))
+    [(l/class= :media) (l/content (render-api-error album))]
+    (l/compose-pews
+      [(l/element= :a)          (l/attr :href (str "/album/" (:id album)))]
+      [(l/element= :img)        (l/attr :src (str (-> album :image :extralarge)))]
+      [(l/class= :album-title)  (l/content (:title album))]
+      [(l/class= :album-artist) (l/content (format-artists album))]
+      [(l/class= :album-label)  (l/content (format-labels album))]
+      [(l/class= :album-media)  (l/content (format-media album))]
+      [(l/class= :owners)       (l/content (pluralize (get album :owners 0) "owner"))]
+      [(l/class= :buttons)      (l/content (render-album-buttons album :small))])))
 
 (let [none-html (static :none)]
-  (defragment render-album-thumbs (template :album-thumb)
-    [albums]
+  (defn render-album-thumbs [albums]
     (if (seq albums)
-      [(l/element= :li) #(for [album albums]
-                           (album-thumb-node % album))]
-      [(l/element= :li) (comp (l/classes "span12")
-                              (l/content none-html))])))
+      (for [row (partition 2 albums)]
+        (l/node :div :attrs {:class "row"}
+                :content (map render-album-thumb row)))
+      [none-html])))
 
 (defn render-tracks-table [album]
   (flatten
@@ -105,8 +104,7 @@
           pages (count-pages (album/count-albums) 6)]
       (layout
         (concat heading
-                [(l/node :ul :attrs {:class "thumbnails"}
-                         :content (render-album-thumbs albums))]
+                (render-album-thumbs albums)
                 (pager "/albums?" page pages))
         :active :albums))))
 
@@ -115,8 +113,7 @@
         title (str "Album search: " query)]
     (layout
       (concat (heading-search title "/albums/search" query)
-              [(l/node :ul :attrs {:class "thumbnails"}
-                       :content (render-album-thumbs albums))]
+              (render-album-thumbs albums)
               (pager (str "/albums/search?q=" query "&") page pages))
       :title title
       :active :albums)))

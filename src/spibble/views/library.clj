@@ -23,8 +23,7 @@
       (layout
         (concat (heading-search [title " " count-node]
                                 (str "/library/" name "/search"))
-                [(l/node :ul :attrs {:class "thumbnails"}
-                         :content (render-album-thumbs library))]
+                (render-album-thumbs library)
                 (pager (str "/library/" name "?") page pages))
         :title title
         :active (when (self? user) :library)))))
